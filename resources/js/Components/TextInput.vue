@@ -1,5 +1,5 @@
 <script setup>
-defineModel({ type: String, default: '' });
+const model = defineModel({ type: String, default: '' });
 
 defineProps({
     type: { type: String, default: 'text' },
@@ -10,7 +10,7 @@ defineProps({
 
 <template>
     <input
-        v-model="$model"
+        v-model="model"
         :type="type"
         :placeholder="placeholder"
         :autofocus="autofocus"

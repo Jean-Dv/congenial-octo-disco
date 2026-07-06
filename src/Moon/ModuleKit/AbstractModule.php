@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Moon\ModuleKit;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Moon\ModuleKit\Contracts\ModuleInterface;
 use ReflectionClass;
@@ -57,7 +58,7 @@ abstract class AbstractModule extends ServiceProvider implements ModuleInterface
         }
 
         if (is_file("{$base}/routes/web.php")) {
-            $this->loadRoutesFrom("{$base}/routes/web.php");
+            Route::middleware('web')->group("{$base}/routes/web.php");
         }
 
         if (is_dir("{$base}/resources/lang")) {

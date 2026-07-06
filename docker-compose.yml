@@ -1,45 +1,6 @@
 name: moon-cms
 
 services:
-    app:
-        build:
-            context: .
-            dockerfile: docker/php/Dockerfile
-        volumes:
-            - .:/var/www/html
-        environment:
-            - CONTAINER_ROLE=app
-        depends_on:
-            - postgres
-            - redis
-        networks:
-            - moon
-
-    queue:
-        build:
-            context: .
-            dockerfile: docker/php/Dockerfile
-        command: php artisan queue:work redis --queue=provisioning,mail,default --tries=5 --backoff=5,15,30,60,120 --max-time=3600
-        volumes:
-            - .:/var/www/html
-        depends_on:
-            - postgres
-            - redis
-        networks:
-            - moon
-
-    nginx:
-        image: nginx:1.27-alpine
-        ports:
-            - "${APP_PORT:-8080}:80"
-        volumes:
-            - .:/var/www/html
-            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-        depends_on:
-            - app
-        networks:
-            - moon
-
     postgres:
         image: postgres:16-alpine
         environment:
@@ -70,26 +31,6 @@ services:
         networks:
             - moon
 
-    # ---------------------------------------------------------------------
-    # Servicio OPCIONAL. Simula la base "auth" de un core (esquema mínimo
-    # tipo TrinityCore/AzerothCore) para poder probar el flujo completo de
-    # registro/aprovisionamiento sin depender de un core real corriendo.
-    # Actívalo con: docker compose --profile mock-realm up
-    # ---------------------------------------------------------------------
-    mock-realm-db:
-        image: mysql:8.0
-        profiles: ["mock-realm"]
-        environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: auth
-        ports:
-            - "3307:3306"
-        volumes:
-            - moon-mock-realm-data:/var/lib/mysql
-            - ./docker/mock-realm/init.sql:/docker-entrypoint-initdb.d/init.sql
-        networks:
-            - moon
-
 networks:
     moon:
         driver: bridge
@@ -97,4 +38,3 @@ networks:
 volumes:
     moon-postgres-data:
     moon-redis-data:
-    moon-mock-realm-data:
