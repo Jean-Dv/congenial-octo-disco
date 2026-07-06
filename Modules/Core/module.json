@@ -1,0 +1,9 @@
+{
+    "slug": "core",
+    "name": "Core",
+    "description": "Identidad del panel, reinos multi-core y comunicacion remota con los cores de WoW. Modulo obligatorio: no puede deshabilitarse.",
+    "version": "1.0.0",
+    "is_core": true,
+    "provider": "Modules\\Core\\Providers\\CoreServiceProvider",
+    "dependencies": []
+}
