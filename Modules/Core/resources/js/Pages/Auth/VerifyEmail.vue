@@ -1,6 +1,5 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
@@ -21,17 +20,16 @@ function submit() {
     <Head title="Verifica tu correo" />
 
     <GuestLayout title="Verifica tu correo electronico" subtitle="Falta un ultimo paso">
-        <p class="text-sm text-parchment-300">
-            Gracias por registrarte. Antes de continuar, ¿puedes confirmar tu correo haciendo clic en el enlace que te
-            acabamos de enviar? Si no lo recibiste, con gusto te enviamos otro.
+        <p class="text-sm text-aeris-on-surface-muted">
+            Gracias por registrarte. Antes de continuar, confirma tu correo con el enlace que acabamos de enviar.
         </p>
 
-        <div v-if="verificationLinkSent" class="mt-4 rounded-lg border border-spectral-500/30 bg-spectral-500/10 px-4 py-3 text-sm text-spectral-400">
+        <AerisAlert v-if="verificationLinkSent" tone="success" class="mt-4">
             Te enviamos un nuevo enlace de verificacion a tu correo.
-        </div>
+        </AerisAlert>
 
         <form class="mt-6" @submit.prevent="submit">
-            <PrimaryButton :disabled="form.processing">Reenviar correo de verificacion</PrimaryButton>
+            <AerisButton type="submit" :disabled="form.processing" block>Reenviar correo de verificacion</AerisButton>
         </form>
     </GuestLayout>
 </template>

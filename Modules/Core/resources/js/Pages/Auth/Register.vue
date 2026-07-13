@@ -1,9 +1,5 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
-import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
@@ -23,38 +19,34 @@ function submit() {
 <template>
     <Head title="Crear cuenta" />
 
-    <GuestLayout title="Crea tu cuenta" subtitle="El mismo usuario y contraseña te serviran para jugar">
+    <GuestLayout title="Crea tu cuenta" subtitle="El mismo usuario y contrasena te serviran para jugar">
         <form class="space-y-5" @submit.prevent="submit">
-            <div>
-                <InputLabel for="username" value="Usuario" />
-                <TextInput id="username" v-model="form.username" autofocus placeholder="MaxDe16Caracteres" />
-                <InputError :message="form.errors.username" />
-                <p class="mt-1 text-xs text-parchment-500">Maximo 16 caracteres, solo letras y numeros: es el mismo usuario para entrar al juego.</p>
-            </div>
+            <AerisField
+                for="username"
+                label="Usuario"
+                help="Maximo 16 caracteres, solo letras y numeros."
+                :error="form.errors.username"
+            >
+                <AerisInput id="username" v-model="form.username" autofocus placeholder="MaxDe16Caracteres" />
+            </AerisField>
 
-            <div>
-                <InputLabel for="email" value="Correo electronico" />
-                <TextInput id="email" v-model="form.email" type="email" placeholder="tucorreo@ejemplo.com" />
-                <InputError :message="form.errors.email" />
-            </div>
+            <AerisField for="email" label="Correo electronico" :error="form.errors.email">
+                <AerisInput id="email" v-model="form.email" type="email" placeholder="tucorreo@ejemplo.com" />
+            </AerisField>
 
-            <div>
-                <InputLabel for="password" value="Contraseña" />
-                <TextInput id="password" v-model="form.password" type="password" placeholder="Maximo 16 caracteres" />
-                <InputError :message="form.errors.password" />
-            </div>
+            <AerisField for="password" label="Contrasena" :error="form.errors.password">
+                <AerisInput id="password" v-model="form.password" type="password" placeholder="Maximo 16 caracteres" />
+            </AerisField>
 
-            <div>
-                <InputLabel for="password_confirmation" value="Confirmar contraseña" />
-                <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password" placeholder="Repite tu contraseña" />
-                <InputError :message="form.errors.password_confirmation" />
-            </div>
+            <AerisField for="password_confirmation" label="Confirmar contrasena" :error="form.errors.password_confirmation">
+                <AerisInput id="password_confirmation" v-model="form.password_confirmation" type="password" placeholder="Repite tu contrasena" />
+            </AerisField>
 
-            <PrimaryButton :disabled="form.processing">Crear cuenta</PrimaryButton>
+            <AerisButton type="submit" :disabled="form.processing" block>Crear cuenta</AerisButton>
 
-            <p class="text-center text-sm text-parchment-500">
-                ¿Ya tienes cuenta?
-                <Link href="/login" class="font-medium text-rune-400 hover:text-rune-300">Inicia sesion</Link>
+            <p class="text-center text-sm text-aeris-on-surface-muted">
+                Ya tienes cuenta?
+                <Link href="/login" class="aeris-link">Inicia sesion</Link>
             </p>
         </form>
     </GuestLayout>

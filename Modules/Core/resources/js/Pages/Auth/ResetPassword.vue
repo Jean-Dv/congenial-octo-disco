@@ -1,9 +1,5 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
-import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
@@ -26,29 +22,23 @@ function submit() {
 </script>
 
 <template>
-    <Head title="Restablecer contraseña" />
+    <Head title="Restablecer contrasena" />
 
-    <GuestLayout title="Restablece tu contraseña" subtitle="Se actualizara en el panel y en cada reino">
+    <GuestLayout title="Restablece tu contrasena" subtitle="Se actualizara en el panel y en cada reino">
         <form class="space-y-5" @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Correo electronico" />
-                <TextInput id="email" v-model="form.email" type="email" />
-                <InputError :message="form.errors.email" />
-            </div>
+            <AerisField for="email" label="Correo electronico" :error="form.errors.email">
+                <AerisInput id="email" v-model="form.email" type="email" />
+            </AerisField>
 
-            <div>
-                <InputLabel for="password" value="Nueva contraseña" />
-                <TextInput id="password" v-model="form.password" type="password" autofocus placeholder="Maximo 16 caracteres" />
-                <InputError :message="form.errors.password" />
-            </div>
+            <AerisField for="password" label="Nueva contrasena" :error="form.errors.password">
+                <AerisInput id="password" v-model="form.password" type="password" autofocus placeholder="Maximo 16 caracteres" />
+            </AerisField>
 
-            <div>
-                <InputLabel for="password_confirmation" value="Confirmar nueva contraseña" />
-                <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password" />
-                <InputError :message="form.errors.password_confirmation" />
-            </div>
+            <AerisField for="password_confirmation" label="Confirmar nueva contrasena" :error="form.errors.password_confirmation">
+                <AerisInput id="password_confirmation" v-model="form.password_confirmation" type="password" />
+            </AerisField>
 
-            <PrimaryButton :disabled="form.processing">Restablecer contraseña</PrimaryButton>
+            <AerisButton type="submit" :disabled="form.processing" block>Restablecer contrasena</AerisButton>
         </form>
     </GuestLayout>
 </template>

@@ -2,7 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
 
-const props = defineProps({
+defineProps({
     modules: { type: Array, default: () => [] },
 });
 
@@ -19,39 +19,36 @@ function toggle(module) {
     <Head title="Modulos" />
 
     <AppLayout title="Modulos">
-        <p class="mb-6 text-sm text-parchment-500">
-            Un modulo nuevo (carpeta añadida en <code class="font-mono-data">Modules/</code>) aparece aqui automaticamente,
-            habilitado por defecto. "Core" es obligatorio y no se puede deshabilitar.
+        <p class="mb-6 text-sm text-aeris-on-surface-muted">
+            Un modulo nuevo en <code class="font-mono-data text-aeris-on-surface">Modules/</code> aparece automaticamente,
+            habilitado por defecto. Core es obligatorio y no se puede deshabilitar.
         </p>
 
         <div class="space-y-3">
-            <div
+            <AerisCard
                 v-for="module in modules"
                 :key="module.slug"
-                class="flex items-center justify-between rounded-xl border border-ink-700 bg-ink-900 p-5"
+                as="article"
+                padding="sm"
             >
-                <div>
-                    <div class="flex items-center gap-2">
-                        <p class="font-display text-base font-semibold text-parchment-100">{{ module.name }}</p>
-                        <span class="font-mono-data text-xs text-parchment-500">v{{ module.version }}</span>
-                        <span v-if="module.is_core" class="rounded-full bg-rune-500/15 px-2 py-0.5 text-xs text-rune-400">obligatorio</span>
+                <div class="flex items-center justify-between gap-4">
+                    <div class="min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <p class="text-base font-semibold text-aeris-on-surface">{{ module.name }}</p>
+                            <span class="font-mono-data text-xs text-aeris-on-surface-muted">v{{ module.version }}</span>
+                            <AerisBadge v-if="module.is_core" tone="active">obligatorio</AerisBadge>
+                        </div>
+                        <p class="mt-1 text-sm text-aeris-on-surface-muted">{{ module.description }}</p>
                     </div>
-                    <p class="mt-1 text-sm text-parchment-500">{{ module.description }}</p>
-                </div>
 
-                <button
-                    type="button"
-                    :disabled="module.is_core"
-                    @click="toggle(module)"
-                    class="relative h-6 w-11 shrink-0 rounded-full transition disabled:cursor-not-allowed disabled:opacity-50"
-                    :class="module.enabled ? 'bg-rune-500' : 'bg-ink-700'"
-                >
-                    <span
-                        class="absolute top-0.5 h-5 w-5 rounded-full bg-parchment-100 transition"
-                        :class="module.enabled ? 'left-5' : 'left-0.5'"
+                    <AerisSwitch
+                        :checked="module.enabled"
+                        :disabled="module.is_core"
+                        :label="`Cambiar estado de ${module.name}`"
+                        @toggle="toggle(module)"
                     />
-                </button>
-            </div>
+                </div>
+            </AerisCard>
         </div>
     </AppLayout>
 </template>

@@ -1,46 +1,160 @@
 @import "tailwindcss";
 
 @theme {
-    /* -- Paleta: consola de control de un reino WoW -------------------- */
-    --color-ink-950: #0d0e12;
-    --color-ink-900: #14161c;
-    --color-ink-800: #1b1e26;
-    --color-ink-700: #262a35;
-    --color-ink-600: #363c4a;
+    /* Aeris theme ------------------------------------------------------ */
+    --color-aeris-surface: #131313;
+    --color-aeris-surface-dim: #131313;
+    --color-aeris-surface-bright: #3a3939;
+    --color-aeris-surface-container-lowest: #0e0e0e;
+    --color-aeris-surface-container-low: #1c1b1b;
+    --color-aeris-surface-container: #201f1f;
+    --color-aeris-surface-container-high: #2a2a2a;
+    --color-aeris-surface-container-highest: #353534;
+    --color-aeris-on-surface: #e5e2e1;
+    --color-aeris-on-surface-variant: #e7bdb6;
+    --color-aeris-on-surface-muted: #a1a1a1;
+    --color-aeris-on-surface-disabled: #525252;
+    --color-aeris-inverse-surface: #e5e2e1;
+    --color-aeris-inverse-on-surface: #313030;
+    --color-aeris-outline: #ae8882;
+    --color-aeris-outline-variant: #5e3f3b;
+    --color-aeris-border: #2d2d2d;
+    --color-aeris-primary: #ffb4a8;
+    --color-aeris-on-primary: #690001;
+    --color-aeris-primary-container: #e62117;
+    --color-aeris-on-primary-container: #fffeff;
+    --color-aeris-inverse-primary: #c00003;
+    --color-aeris-secondary: #c8c6c5;
+    --color-aeris-on-secondary: #313030;
+    --color-aeris-secondary-container: #474746;
+    --color-aeris-on-secondary-container: #b7b5b4;
+    --color-aeris-tertiary: #c8c6c6;
+    --color-aeris-on-tertiary: #303030;
+    --color-aeris-tertiary-container: #767575;
+    --color-aeris-on-tertiary-container: #fbfeff;
+    --color-aeris-error: #ffb4ab;
+    --color-aeris-on-error: #690005;
+    --color-aeris-error-container: #93000a;
+    --color-aeris-on-error-container: #ffdad6;
+    --color-aeris-background: #131313;
+    --color-aeris-on-background: #e5e2e1;
+    --color-aeris-surface-variant: #353534;
+    --color-aeris-void: #0a0a0a;
+    --color-aeris-glass: rgb(10 10 10 / 0.74);
 
-    --color-parchment-100: #edeae2;
-    --color-parchment-300: #c9c4b8;
-    --color-parchment-500: #8d8879;
+    --font-display: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Space Mono", ui-monospace, "SFMono-Regular", monospace;
 
-    --color-rune-400: #dba05e;
-    --color-rune-500: #c9873f;
-    --color-rune-600: #a86c2c;
+    --radius-sm: 0.125rem;
+    --radius: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
 
-    --color-spectral-400: #7c93ff;
-    --color-spectral-500: #5c7cfa;
-    --color-spectral-600: #4863d6;
-
-    --color-garnet-400: #d3697f;
-    --color-garnet-500: #b3455b;
-    --color-garnet-600: #8f3448;
-
-    --font-display: "Fraunces", ui-serif, Georgia, serif;
-    --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
-    --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+    /* Compatibilidad temporal para modulos que aun usen tokens antiguos. */
+    --color-ink-950: #0a0a0a;
+    --color-ink-900: #121212;
+    --color-ink-800: #1a1a1a;
+    --color-ink-700: #2d2d2d;
+    --color-ink-600: #3a3939;
+    --color-parchment-100: #ffffff;
+    --color-parchment-300: #e5e2e1;
+    --color-parchment-500: #a1a1a1;
+    --color-rune-400: #ffb4a8;
+    --color-rune-500: #e62117;
+    --color-rune-600: #c00003;
+    --color-spectral-400: #c8c6c5;
+    --color-spectral-500: #767575;
+    --color-spectral-600: #474746;
+    --color-garnet-400: #ffb4ab;
+    --color-garnet-500: #93000a;
+    --color-garnet-600: #690005;
 }
 
 @layer base {
+    html {
+        color-scheme: dark;
+    }
+
     body {
-        @apply bg-ink-950 text-parchment-100 antialiased;
+        @apply bg-aeris-background text-aeris-on-background antialiased;
         font-family: var(--font-body);
     }
 
-    h1, h2, h3 {
+    h1,
+    h2,
+    h3 {
         font-family: var(--font-display);
+        letter-spacing: 0;
     }
 
     ::selection {
-        @apply bg-rune-500/30 text-parchment-100;
+        @apply bg-aeris-primary-container/35 text-aeris-on-primary-container;
+    }
+
+    * {
+        scrollbar-color: var(--color-aeris-border) transparent;
+        scrollbar-width: thin;
+    }
+
+    *::-webkit-scrollbar {
+        height: 4px;
+        width: 4px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background: var(--color-aeris-border);
+        border-radius: 9999px;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+        background: var(--color-aeris-primary-container);
+    }
+}
+
+@layer components {
+    .aeris-grid-shell {
+        background:
+            linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+            var(--color-aeris-background);
+        background-size: 32px 32px;
+    }
+
+    .aeris-glass {
+        background: var(--color-aeris-glass);
+        backdrop-filter: blur(20px);
+    }
+
+    .aeris-table {
+        @apply min-w-full text-left text-sm;
+    }
+
+    .aeris-table thead {
+        @apply border-b border-aeris-border text-xs uppercase text-aeris-on-surface-muted;
+        font-family: var(--font-mono);
+        letter-spacing: 0;
+    }
+
+    .aeris-table th {
+        @apply px-5 py-3 font-medium;
+    }
+
+    .aeris-table tbody {
+        @apply divide-y divide-aeris-border;
+    }
+
+    .aeris-table td {
+        @apply px-5 py-3.5 align-middle;
+    }
+
+    .aeris-link {
+        @apply font-medium text-aeris-primary transition hover:text-aeris-on-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aeris-primary-container/45;
     }
 }
 
@@ -53,6 +167,7 @@
     .status-pulse {
         position: relative;
     }
+
     .status-pulse::before {
         content: "";
         position: absolute;

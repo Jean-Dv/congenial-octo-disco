@@ -1,8 +1,37 @@
 import '../css/app.css';
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
+import AerisAlert from './Components/AerisAlert.vue';
+import AerisBadge from './Components/AerisBadge.vue';
+import AerisButton from './Components/AerisButton.vue';
+import AerisCard from './Components/AerisCard.vue';
+import AerisCheckbox from './Components/AerisCheckbox.vue';
+import AerisField from './Components/AerisField.vue';
+import AerisIconButton from './Components/AerisIconButton.vue';
+import AerisInput from './Components/AerisInput.vue';
+import AerisLogo from './Components/AerisLogo.vue';
+import AerisNavLink from './Components/AerisNavLink.vue';
+import AerisSelect from './Components/AerisSelect.vue';
+import AerisSwitch from './Components/AerisSwitch.vue';
+import AerisTable from './Components/AerisTable.vue';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Moon';
+
+const aerisComponents = {
+    AerisAlert,
+    AerisBadge,
+    AerisButton,
+    AerisCard,
+    AerisCheckbox,
+    AerisField,
+    AerisIconButton,
+    AerisInput,
+    AerisLogo,
+    AerisNavLink,
+    AerisSelect,
+    AerisSwitch,
+    AerisTable,
+};
 
 // Cada modulo publica sus propias paginas Inertia bajo su propia carpeta:
 //   Modules/{NombreModulo}/resources/js/Pages/**/*.vue
@@ -28,11 +57,15 @@ createInertiaApp({
         return loader().then((module) => module.default ?? module);
     },
     setup({ el, App, props, plugin }) {
-        createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .mount(el);
+        const vueApp = createApp({ render: () => h(App, props) }).use(plugin);
+
+        Object.entries(aerisComponents).forEach(([name, component]) => {
+            vueApp.component(name, component);
+        });
+
+        vueApp.mount(el);
     },
     progress: {
-        color: '#c9873f',
+        color: '#e62117',
     },
 });

@@ -1,9 +1,5 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
-import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 
 defineProps({
@@ -18,21 +14,19 @@ function submit() {
 </script>
 
 <template>
-    <Head title="Olvide mi contraseña" />
+    <Head title="Olvide mi contrasena" />
 
-    <GuestLayout title="¿Olvidaste tu contraseña?" subtitle="Te enviamos un enlace para restablecerla">
-        <div v-if="status" class="mb-5 rounded-lg border border-spectral-500/30 bg-spectral-500/10 px-4 py-3 text-sm text-spectral-400">
+    <GuestLayout title="Olvidaste tu contrasena?" subtitle="Te enviamos un enlace para restablecerla">
+        <AerisAlert v-if="status" tone="success" class="mb-5">
             {{ status }}
-        </div>
+        </AerisAlert>
 
         <form class="space-y-5" @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Correo electronico" />
-                <TextInput id="email" v-model="form.email" type="email" autofocus placeholder="tucorreo@ejemplo.com" />
-                <InputError :message="form.errors.email" />
-            </div>
+            <AerisField for="email" label="Correo electronico" :error="form.errors.email">
+                <AerisInput id="email" v-model="form.email" type="email" autofocus placeholder="tucorreo@ejemplo.com" />
+            </AerisField>
 
-            <PrimaryButton :disabled="form.processing">Enviar enlace</PrimaryButton>
+            <AerisButton type="submit" :disabled="form.processing" block>Enviar enlace</AerisButton>
         </form>
     </GuestLayout>
 </template>

@@ -1,8 +1,4 @@
 <script setup>
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
-import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref } from 'vue';
 
 const props = defineProps({
@@ -27,136 +23,94 @@ function toggleCharactersDb() {
 
 <template>
     <form class="space-y-8" @submit.prevent="emit('submit')">
-        <!-- Datos generales -->
-        <section class="rounded-xl border border-ink-700 bg-ink-900 p-6">
-            <h3 class="font-display text-base font-semibold text-parchment-100">Datos generales</h3>
-            <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div>
-                    <InputLabel value="Nombre" />
-                    <TextInput v-model="form.name" placeholder="Reino Azuremyst" />
-                    <InputError :message="form.errors['name']" />
-                </div>
-                <div>
-                    <InputLabel value="Slug" />
-                    <TextInput v-model="form.slug" placeholder="azuremyst" />
-                    <InputError :message="form.errors['slug']" />
-                </div>
-                <div>
-                    <InputLabel value="Core" />
-                    <select v-model="form.core_type" class="w-full rounded-lg border border-ink-600 bg-ink-800 px-3.5 py-2.5 text-sm text-parchment-100 outline-none focus:border-rune-500 focus:ring-2 focus:ring-rune-500/30">
+        <AerisCard title="Datos generales" tone="important">
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <AerisField label="Nombre" :error="form.errors['name']">
+                    <AerisInput v-model="form.name" placeholder="Reino Azuremyst" />
+                </AerisField>
+                <AerisField label="Slug" :error="form.errors['slug']">
+                    <AerisInput v-model="form.slug" placeholder="azuremyst" />
+                </AerisField>
+                <AerisField label="Core" :error="form.errors['core_type']">
+                    <AerisSelect v-model="form.core_type">
                         <option v-for="core in coreTypes" :key="core.value" :value="core.value">
                             {{ core.label }}{{ core.has_full_support ? '' : ' (sin implementar todavia)' }}
                         </option>
-                    </select>
-                    <InputError :message="form.errors['core_type']" />
-                </div>
-                <div>
-                    <InputLabel value="RealmID para GM (account_access)" />
-                    <TextInput v-model="form.gm_realm_id" type="number" placeholder="-1 (todos los reinos)" />
-                    <InputError :message="form.errors['gm_realm_id']" />
-                </div>
+                    </AerisSelect>
+                </AerisField>
+                <AerisField label="RealmID para GM (account_access)" :error="form.errors['gm_realm_id']">
+                    <AerisInput v-model="form.gm_realm_id" type="number" placeholder="-1 (todos los reinos)" />
+                </AerisField>
             </div>
-            <label class="mt-5 flex items-center gap-2 text-sm text-parchment-300">
-                <input v-model="form.enabled" type="checkbox" class="rounded border-ink-600 bg-ink-800 text-rune-500 focus:ring-rune-500/30" />
+
+            <AerisCheckbox v-model="form.enabled" class="mt-5">
                 Reino habilitado (se aprovisionan cuentas de juego automaticamente aqui)
-            </label>
-        </section>
+            </AerisCheckbox>
+        </AerisCard>
 
-        <!-- Base de datos auth -->
-        <section class="rounded-xl border border-ink-700 bg-ink-900 p-6">
-            <h3 class="font-display text-base font-semibold text-parchment-100">Base de datos "auth"</h3>
-            <p class="mt-1 text-xs text-parchment-500">Se guarda cifrada. Se resuelve en caliente, no toca tu config/database.php.</p>
-            <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div>
-                    <InputLabel value="Host" />
-                    <TextInput v-model="form.auth_database.host" placeholder="127.0.0.1" />
-                    <InputError :message="form.errors['auth_database.host']" />
-                </div>
-                <div>
-                    <InputLabel value="Puerto" />
-                    <TextInput v-model="form.auth_database.port" type="number" placeholder="3306" />
-                    <InputError :message="form.errors['auth_database.port']" />
-                </div>
-                <div>
-                    <InputLabel value="Base de datos" />
-                    <TextInput v-model="form.auth_database.database" placeholder="auth" />
-                    <InputError :message="form.errors['auth_database.database']" />
-                </div>
-                <div>
-                    <InputLabel value="Usuario" />
-                    <TextInput v-model="form.auth_database.username" placeholder="trinity" />
-                    <InputError :message="form.errors['auth_database.username']" />
-                </div>
-                <div>
-                    <InputLabel value="Contraseña" />
-                    <TextInput v-model="form.auth_database.password" type="password" />
-                    <InputError :message="form.errors['auth_database.password']" />
-                </div>
+        <AerisCard title='Base de datos "auth"' subtitle="Se guarda cifrada. Se resuelve en caliente, no toca tu config/database.php.">
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <AerisField label="Host" :error="form.errors['auth_database.host']">
+                    <AerisInput v-model="form.auth_database.host" placeholder="127.0.0.1" />
+                </AerisField>
+                <AerisField label="Puerto" :error="form.errors['auth_database.port']">
+                    <AerisInput v-model="form.auth_database.port" type="number" placeholder="3306" />
+                </AerisField>
+                <AerisField label="Base de datos" :error="form.errors['auth_database.database']">
+                    <AerisInput v-model="form.auth_database.database" placeholder="auth" />
+                </AerisField>
+                <AerisField label="Usuario" :error="form.errors['auth_database.username']">
+                    <AerisInput v-model="form.auth_database.username" placeholder="trinity" />
+                </AerisField>
+                <AerisField label="Contrasena" :error="form.errors['auth_database.password']">
+                    <AerisInput v-model="form.auth_database.password" type="password" />
+                </AerisField>
             </div>
-        </section>
+        </AerisCard>
 
-        <!-- Base de datos characters (opcional) -->
-        <section class="rounded-xl border border-ink-700 bg-ink-900 p-6">
-            <div class="flex items-center justify-between">
-                <h3 class="font-display text-base font-semibold text-parchment-100">Base de datos "characters"</h3>
-                <button type="button" @click="toggleCharactersDb" class="text-xs font-medium text-rune-400 hover:text-rune-300">
-                    {{ includeCharactersDb ? 'Quitar' : 'Añadir' }}
-                </button>
+        <AerisCard title='Base de datos "characters"' subtitle="Opcional en esta version del core: la usaran los modulos futuros que lean personajes.">
+            <template #actions>
+                <AerisButton type="button" variant="ghost" size="sm" @click="toggleCharactersDb">
+                    {{ includeCharactersDb ? 'Quitar' : 'Anadir' }}
+                </AerisButton>
+            </template>
+
+            <div v-if="includeCharactersDb" class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <AerisField label="Host">
+                    <AerisInput v-model="form.characters_database.host" placeholder="127.0.0.1" />
+                </AerisField>
+                <AerisField label="Puerto">
+                    <AerisInput v-model="form.characters_database.port" type="number" placeholder="3306" />
+                </AerisField>
+                <AerisField label="Base de datos">
+                    <AerisInput v-model="form.characters_database.database" placeholder="characters" />
+                </AerisField>
+                <AerisField label="Usuario">
+                    <AerisInput v-model="form.characters_database.username" placeholder="trinity" />
+                </AerisField>
+                <AerisField label="Contrasena">
+                    <AerisInput v-model="form.characters_database.password" type="password" />
+                </AerisField>
             </div>
-            <p class="mt-1 text-xs text-parchment-500">Opcional en esta version del core: la usaran los modulos futuros que lean personajes.</p>
+        </AerisCard>
 
-            <div v-if="includeCharactersDb" class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div>
-                    <InputLabel value="Host" />
-                    <TextInput v-model="form.characters_database.host" placeholder="127.0.0.1" />
-                </div>
-                <div>
-                    <InputLabel value="Puerto" />
-                    <TextInput v-model="form.characters_database.port" type="number" placeholder="3306" />
-                </div>
-                <div>
-                    <InputLabel value="Base de datos" />
-                    <TextInput v-model="form.characters_database.database" placeholder="characters" />
-                </div>
-                <div>
-                    <InputLabel value="Usuario" />
-                    <TextInput v-model="form.characters_database.username" placeholder="trinity" />
-                </div>
-                <div>
-                    <InputLabel value="Contraseña" />
-                    <TextInput v-model="form.characters_database.password" type="password" />
-                </div>
+        <AerisCard title="Consola remota (SOAP)" subtitle='Cuenta GM (rango 3+) del worldserver, usada para "server info", kick y comandos de personaje.'>
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <AerisField label="Host" :error="form.errors['remote_console.host']">
+                    <AerisInput v-model="form.remote_console.host" placeholder="127.0.0.1" />
+                </AerisField>
+                <AerisField label="Puerto" :error="form.errors['remote_console.port']">
+                    <AerisInput v-model="form.remote_console.port" type="number" placeholder="7878" />
+                </AerisField>
+                <AerisField label="Usuario GM" :error="form.errors['remote_console.username']">
+                    <AerisInput v-model="form.remote_console.username" />
+                </AerisField>
+                <AerisField label="Contrasena" :error="form.errors['remote_console.password']">
+                    <AerisInput v-model="form.remote_console.password" type="password" />
+                </AerisField>
             </div>
-        </section>
+        </AerisCard>
 
-        <!-- SOAP -->
-        <section class="rounded-xl border border-ink-700 bg-ink-900 p-6">
-            <h3 class="font-display text-base font-semibold text-parchment-100">Consola remota (SOAP)</h3>
-            <p class="mt-1 text-xs text-parchment-500">Cuenta GM (rango 3+) del worldserver, usada para "server info", kick y comandos de personaje.</p>
-            <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div>
-                    <InputLabel value="Host" />
-                    <TextInput v-model="form.remote_console.host" placeholder="127.0.0.1" />
-                    <InputError :message="form.errors['remote_console.host']" />
-                </div>
-                <div>
-                    <InputLabel value="Puerto" />
-                    <TextInput v-model="form.remote_console.port" type="number" placeholder="7878" />
-                    <InputError :message="form.errors['remote_console.port']" />
-                </div>
-                <div>
-                    <InputLabel value="Usuario GM" />
-                    <TextInput v-model="form.remote_console.username" />
-                    <InputError :message="form.errors['remote_console.username']" />
-                </div>
-                <div>
-                    <InputLabel value="Contraseña" />
-                    <TextInput v-model="form.remote_console.password" type="password" />
-                    <InputError :message="form.errors['remote_console.password']" />
-                </div>
-            </div>
-        </section>
-
-        <PrimaryButton :disabled="form.processing" class="w-auto px-6">{{ submitLabel }}</PrimaryButton>
+        <AerisButton type="submit" :disabled="form.processing">{{ submitLabel }}</AerisButton>
     </form>
 </template>
