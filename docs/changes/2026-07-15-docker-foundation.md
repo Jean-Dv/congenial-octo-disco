@@ -1,6 +1,6 @@
 # Reparación inicial del entorno Docker
 
-Fecha: 2026-07-15  
+Fecha: 2026-07-15
 Rama: `fix/docker-foundation`
 
 ## Objetivo
