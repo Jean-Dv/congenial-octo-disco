@@ -145,20 +145,24 @@ Un módulo recién detectado queda **habilitado por defecto** (tal como se pidi�
 
 ## Puesta en marcha
 
-Este entorno de generación no tiene acceso a Packagist ni a un runtime de PHP persistente, así que **no se pudo ejecutar `composer install` / `npm install` aquí**. Pasos para levantarlo en tu máquina:
+El entorno local usa Docker Compose para mantener las versiones de PHP, Node, pnpm y los servicios de infraestructura alineadas entre colaboradores. En la primera instalación:
 
 ```bash
 cp .env.example .env
 
-docker compose up -d --build
-docker compose exec app composer install
-docker compose exec app php artisan key:generate
-docker compose exec app php artisan migrate
-docker compose exec app npm install
-docker compose exec app npm run build   # o "npm run dev" en otra terminal para desarrollo
+# Prepara la imagen y las dependencias antes de iniciar la cola.
+docker compose build app
+docker compose run --rm --no-deps app composer install
+docker compose run --rm --no-deps app pnpm install --frozen-lockfile
+docker compose run --rm --no-deps app php artisan key:generate
 
-# Cola de aprovisionamiento (ya corre como servicio "queue" en docker-compose,
-# pero si la ejecutas manualmente):
+# Inicia la infraestructura, ejecuta las migraciones y levanta la web.
+docker compose up -d postgres redis mailhog
+docker compose run --rm app php artisan migrate
+docker compose run --rm --no-deps app pnpm build
+docker compose up -d
+
+# La cola ya corre como servicio "queue". Para ejecutarla manualmente:
 docker compose exec app php artisan queue:work redis --queue=provisioning,mail
 
 # Primer administrador (necesario para /admin/realms y /admin/modules):
@@ -171,6 +175,8 @@ docker compose exec app php artisan queue:work redis --queue=provisioning,mail
 - MySQL de prueba con esquema mínimo tipo TrinityCore (opcional, sin depender de un core real): `docker compose --profile mock-realm up -d`
 
 Si ya tienes un TrinityCore/AzerothCore real corriendo, crea el reino desde `/admin/realms` apuntando su BD `auth` y su SOAP directamente (no hace falta el `mock-realm`).
+
+La guía detallada de servicios, verificaciones, operación diaria y solución de problemas está en [`docs/development/docker.md`](docs/development/docker.md).
 
 ## Verificación realizada
 

@@ -1,8 +1,59 @@
 name: moon-cms
 
+# Reuse the same PHP runtime configuration for web and queue services.
+x-app: &app
+    build:
+        context: .
+        dockerfile: docker/php/Dockerfile
+    working_dir: /var/www/html
+    volumes:
+        - .:/var/www/html
+    depends_on:
+        postgres:
+            condition: service_healthy
+        redis:
+            condition: service_healthy
+    networks:
+        - moon
+
 services:
+    app:
+        <<: *app
+        command: php-fpm
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "php-fpm -t >/dev/null 2>&1"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    nginx:
+        image: nginx:1.27-alpine
+        restart: unless-stopped
+        ports:
+            - "${FORWARD_APP_PORT:-8080}:80"
+        volumes:
+            - .:/var/www/html:ro
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+        depends_on:
+            app:
+                condition: service_healthy
+        networks:
+            - moon
+
+    queue:
+        <<: *app
+        command: php artisan queue:work redis --queue=provisioning,mail --tries=5 --timeout=120
+        restart: unless-stopped
+        depends_on:
+            app:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+
     postgres:
         image: postgres:16-alpine
+        restart: unless-stopped
         environment:
             POSTGRES_DB: ${DB_DATABASE:-moon_cms}
             POSTGRES_USER: ${DB_USERNAME:-moon}
@@ -11,23 +62,57 @@ services:
             - moon-postgres-data:/var/lib/postgresql/data
         ports:
             - "${FORWARD_DB_PORT:-5432}:5432"
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-moon} -d ${DB_DATABASE:-moon_cms}"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
         networks:
             - moon
 
     redis:
         image: redis:7-alpine
+        restart: unless-stopped
         ports:
             - "${FORWARD_REDIS_PORT:-6379}:6379"
         volumes:
             - moon-redis-data:/data
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
+            timeout: 3s
+            retries: 10
         networks:
             - moon
 
     mailhog:
-        image: mailhog/mailhog:latest
+        image: mailhog/mailhog:v1.0.1
+        restart: unless-stopped
         ports:
             - "${FORWARD_MAILHOG_PORT:-8025}:8025"
-            - "1025:1025"
+            - "${FORWARD_SMTP_PORT:-1025}:1025"
+        networks:
+            - moon
+
+    mock-realm:
+        image: mysql:8.4
+        profiles: ["mock-realm"]
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: auth
+            MYSQL_USER: trinity
+            MYSQL_PASSWORD: trinity
+            MYSQL_ROOT_PASSWORD: root
+        ports:
+            - "${FORWARD_MOCK_REALM_PORT:-3307}:3306"
+        volumes:
+            - moon-mock-realm-data:/var/lib/mysql
+            - ./docker/mock-realm/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+        healthcheck:
+            test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+            interval: 10s
+            timeout: 5s
+            retries: 15
         networks:
             - moon
 
@@ -38,3 +123,4 @@ networks:
 volumes:
     moon-postgres-data:
     moon-redis-data:
+    moon-mock-realm-data:
