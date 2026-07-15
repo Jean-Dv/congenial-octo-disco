@@ -1,6 +1,7 @@
 import '../css/app.css';
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
+import { ZiggyVue } from 'ziggy-js';
 import AerisAlert from './Components/AerisAlert.vue';
 import AerisBadge from './Components/AerisBadge.vue';
 import AerisButton from './Components/AerisButton.vue';
@@ -57,7 +58,9 @@ createInertiaApp({
         return loader().then((module) => module.default ?? module);
     },
     setup({ el, App, props, plugin }) {
-        const vueApp = createApp({ render: () => h(App, props) }).use(plugin);
+        const vueApp = createApp({ render: () => h(App, props) })
+            .use(plugin)
+            .use(ZiggyVue);
 
         Object.entries(aerisComponents).forEach(([name, component]) => {
             vueApp.component(name, component);

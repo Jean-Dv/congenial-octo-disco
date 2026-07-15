@@ -24,6 +24,7 @@ export default defineConfig({
         alias: {
             '@': path.resolve(__dirname, 'resources/js'),
             '@modules': path.resolve(__dirname, 'Modules'),
+            'ziggy-js': path.resolve('vendor/tightenco/ziggy'),
         },
     },
 });

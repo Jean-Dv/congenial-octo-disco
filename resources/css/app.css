@@ -70,6 +70,35 @@
     --color-garnet-400: #ffb4ab;
     --color-garnet-500: #93000a;
     --color-garnet-600: #690005;
+
+    /* ------------------------------------------------------------------ */
+    /* Landing pública (Aetheris) ---------------------------------------- */
+    /* ------------------------------------------------------------------ */
+    --color-l-bg: #0d141e;
+    --color-l-surface: #0d141e;
+    --color-l-surface-container: #19202a;
+    --color-l-surface-container-high: #232a35;
+    --color-l-surface-container-highest: #2e3540;
+    --color-l-surface-container-low: #151c26;
+    --color-l-surface-container-lowest: #080f18;
+    --color-l-surface-bright: #333a45;
+    --color-l-on-surface: #dce3f1;
+    --color-l-on-surface-variant: #c0c7d4;
+    --color-l-text-primary: #ffffff;
+    --color-l-text-secondary: #b8c2cf;
+    --color-l-text-disabled: #738193;
+    --color-l-outline: #8a919d;
+    --color-l-outline-variant: #404752;
+    --color-l-bg-elevated: #182231;
+    --color-l-bg-hover: #243246;
+    --color-l-primary: #e62117;
+    --color-l-primary-container: #e62117;
+    --color-l-on-primary-container: #ffffff;
+    --color-l-secondary: #88ceff;
+    --color-l-tertiary: #ffb95c;
+    --color-l-status-success: #3ddc97;
+    --color-l-status-error: #ff5d73;
+    --color-l-status-warning: #f4b942;
 }
 
 @layer base {
@@ -129,6 +158,19 @@
     .aeris-glass {
         background: var(--color-aeris-glass);
         backdrop-filter: blur(20px);
+    }
+
+    /* Landing glassmorphism panel */
+    .landing-glass {
+        background: rgba(24, 34, 49, 0.6);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Material Symbols utility */
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
 
     .aeris-table {
