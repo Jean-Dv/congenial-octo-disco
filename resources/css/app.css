@@ -1,46 +1,48 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap");
 @import "tailwindcss";
 
 @theme {
     /* Aeris theme ------------------------------------------------------ */
-    --color-aeris-surface: #131313;
-    --color-aeris-surface-dim: #131313;
-    --color-aeris-surface-bright: #3a3939;
-    --color-aeris-surface-container-lowest: #0e0e0e;
-    --color-aeris-surface-container-low: #1c1b1b;
-    --color-aeris-surface-container: #201f1f;
-    --color-aeris-surface-container-high: #2a2a2a;
-    --color-aeris-surface-container-highest: #353534;
-    --color-aeris-on-surface: #e5e2e1;
-    --color-aeris-on-surface-variant: #e7bdb6;
-    --color-aeris-on-surface-muted: #a1a1a1;
-    --color-aeris-on-surface-disabled: #525252;
-    --color-aeris-inverse-surface: #e5e2e1;
-    --color-aeris-inverse-on-surface: #313030;
-    --color-aeris-outline: #ae8882;
-    --color-aeris-outline-variant: #5e3f3b;
-    --color-aeris-border: #2d2d2d;
-    --color-aeris-primary: #ffb4a8;
-    --color-aeris-on-primary: #690001;
-    --color-aeris-primary-container: #e62117;
-    --color-aeris-on-primary-container: #fffeff;
-    --color-aeris-inverse-primary: #c00003;
-    --color-aeris-secondary: #c8c6c5;
-    --color-aeris-on-secondary: #313030;
-    --color-aeris-secondary-container: #474746;
-    --color-aeris-on-secondary-container: #b7b5b4;
-    --color-aeris-tertiary: #c8c6c6;
-    --color-aeris-on-tertiary: #303030;
-    --color-aeris-tertiary-container: #767575;
-    --color-aeris-on-tertiary-container: #fbfeff;
-    --color-aeris-error: #ffb4ab;
-    --color-aeris-on-error: #690005;
-    --color-aeris-error-container: #93000a;
-    --color-aeris-on-error-container: #ffdad6;
-    --color-aeris-background: #131313;
-    --color-aeris-on-background: #e5e2e1;
-    --color-aeris-surface-variant: #353534;
-    --color-aeris-void: #0a0a0a;
-    --color-aeris-glass: rgb(10 10 10 / 0.74);
+    --color-theme-surface: #131313;
+    --color-theme-surface-dim: #131313;
+    --color-theme-surface-bright: #3a3939;
+    --color-theme-surface-container-lowest: #0e0e0e;
+    --color-theme-surface-container-low: #1c1b1b;
+    --color-theme-surface-container: #201f1f;
+    --color-theme-surface-container-high: #2a2a2a;
+    --color-theme-surface-container-highest: #353534;
+    --color-theme-on-surface: #e5e2e1;
+    --color-theme-on-surface-variant: #e7bdb6;
+    --color-theme-on-surface-muted: #a1a1a1;
+    --color-theme-on-surface-disabled: #525252;
+    --color-theme-inverse-surface: #e5e2e1;
+    --color-theme-inverse-on-surface: #313030;
+    --color-theme-outline: #ae8882;
+    --color-theme-outline-variant: #5e3f3b;
+    --color-theme-border: #2d2d2d;
+    --color-theme-primary: #ffb4a8;
+    --color-theme-on-primary: #690001;
+    --color-theme-primary-container: #e62117;
+    --color-theme-on-primary-container: #fffeff;
+    --color-theme-inverse-primary: #c00003;
+    --color-theme-secondary: #c8c6c5;
+    --color-theme-on-secondary: #313030;
+    --color-theme-secondary-container: #474746;
+    --color-theme-on-secondary-container: #b7b5b4;
+    --color-theme-tertiary: #c8c6c6;
+    --color-theme-on-tertiary: #303030;
+    --color-theme-tertiary-container: #767575;
+    --color-theme-on-tertiary-container: #fbfeff;
+    --color-theme-error: #ffb4ab;
+    --color-theme-on-error: #690005;
+    --color-theme-error-container: #93000a;
+    --color-theme-on-error-container: #ffdad6;
+    --color-theme-background: #131313;
+    --color-theme-on-background: #e5e2e1;
+    --color-theme-surface-variant: #353534;
+    --color-theme-void: #0a0a0a;
+    --color-theme-glass: rgb(10 10 10 / 0.74);
 
     --font-display: "Geist", ui-sans-serif, system-ui, sans-serif;
     --font-body: "Geist", ui-sans-serif, system-ui, sans-serif;
@@ -74,31 +76,31 @@
     /* ------------------------------------------------------------------ */
     /* Landing pública (Aetheris) ---------------------------------------- */
     /* ------------------------------------------------------------------ */
-    --color-l-bg: #0d141e;
-    --color-l-surface: #0d141e;
-    --color-l-surface-container: #19202a;
-    --color-l-surface-container-high: #232a35;
-    --color-l-surface-container-highest: #2e3540;
-    --color-l-surface-container-low: #151c26;
-    --color-l-surface-container-lowest: #080f18;
-    --color-l-surface-bright: #333a45;
-    --color-l-on-surface: #dce3f1;
-    --color-l-on-surface-variant: #c0c7d4;
-    --color-l-text-primary: #ffffff;
-    --color-l-text-secondary: #b8c2cf;
-    --color-l-text-disabled: #738193;
-    --color-l-outline: #8a919d;
-    --color-l-outline-variant: #404752;
-    --color-l-bg-elevated: #182231;
-    --color-l-bg-hover: #243246;
-    --color-l-primary: #e62117;
-    --color-l-primary-container: #e62117;
-    --color-l-on-primary-container: #ffffff;
-    --color-l-secondary: #88ceff;
-    --color-l-tertiary: #ffb95c;
-    --color-l-status-success: #3ddc97;
-    --color-l-status-error: #ff5d73;
-    --color-l-status-warning: #f4b942;
+    --color-theme-public-bg: #0d141e;
+    --color-theme-public-surface: #0d141e;
+    --color-theme-public-surface-container: #19202a;
+    --color-theme-public-surface-container-high: #232a35;
+    --color-theme-public-surface-container-highest: #2e3540;
+    --color-theme-public-surface-container-low: #151c26;
+    --color-theme-public-surface-container-lowest: #080f18;
+    --color-theme-public-surface-bright: #333a45;
+    --color-theme-public-on-surface: #dce3f1;
+    --color-theme-public-on-surface-variant: #c0c7d4;
+    --color-theme-public-text-primary: #ffffff;
+    --color-theme-public-text-secondary: #b8c2cf;
+    --color-theme-public-text-disabled: #738193;
+    --color-theme-public-outline: #8a919d;
+    --color-theme-public-outline-variant: #404752;
+    --color-theme-public-bg-elevated: #182231;
+    --color-theme-public-bg-hover: #243246;
+    --color-theme-public-primary: #e62117;
+    --color-theme-public-primary-container: #e62117;
+    --color-theme-public-on-primary-container: #ffffff;
+    --color-theme-public-secondary: #88ceff;
+    --color-theme-public-tertiary: #ffb95c;
+    --color-theme-public-status-success: #3ddc97;
+    --color-theme-public-status-error: #ff5d73;
+    --color-theme-public-status-warning: #f4b942;
 }
 
 @layer base {
@@ -107,7 +109,7 @@
     }
 
     body {
-        @apply bg-aeris-background text-aeris-on-background antialiased;
+        @apply bg-theme-background text-theme-on-background antialiased;
         font-family: var(--font-body);
     }
 
@@ -119,11 +121,11 @@
     }
 
     ::selection {
-        @apply bg-aeris-primary-container/35 text-aeris-on-primary-container;
+        @apply bg-theme-primary-container/35 text-theme-on-primary-container;
     }
 
     * {
-        scrollbar-color: var(--color-aeris-border) transparent;
+        scrollbar-color: var(--color-theme-border) transparent;
         scrollbar-width: thin;
     }
 
@@ -137,26 +139,26 @@
     }
 
     *::-webkit-scrollbar-thumb {
-        background: var(--color-aeris-border);
+        background: var(--color-theme-border);
         border-radius: 9999px;
     }
 
     *::-webkit-scrollbar-thumb:hover {
-        background: var(--color-aeris-primary-container);
+        background: var(--color-theme-primary-container);
     }
 }
 
 @layer components {
-    .aeris-grid-shell {
+    .theme-grid-shell {
         background:
             linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
-            var(--color-aeris-background);
+            var(--color-theme-background);
         background-size: 32px 32px;
     }
 
-    .aeris-glass {
-        background: var(--color-aeris-glass);
+    .theme-glass {
+        background: var(--color-theme-glass);
         backdrop-filter: blur(20px);
     }
 
@@ -173,30 +175,30 @@
         font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
 
-    .aeris-table {
+    .theme-table {
         @apply min-w-full text-left text-sm;
     }
 
-    .aeris-table thead {
-        @apply border-b border-aeris-border text-xs uppercase text-aeris-on-surface-muted;
+    .theme-table thead {
+        @apply border-b border-theme-border text-xs uppercase text-theme-on-surface-muted;
         font-family: var(--font-mono);
         letter-spacing: 0;
     }
 
-    .aeris-table th {
+    .theme-table th {
         @apply px-5 py-3 font-medium;
     }
 
-    .aeris-table tbody {
-        @apply divide-y divide-aeris-border;
+    .theme-table tbody {
+        @apply divide-y divide-theme-border;
     }
 
-    .aeris-table td {
+    .theme-table td {
         @apply px-5 py-3.5 align-middle;
     }
 
-    .aeris-link {
-        @apply font-medium text-aeris-primary transition hover:text-aeris-on-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aeris-primary-container/45;
+    .theme-link {
+        @apply font-medium text-theme-primary transition hover:text-theme-on-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-primary-container/45;
     }
 }
 

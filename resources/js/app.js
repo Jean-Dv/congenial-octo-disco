@@ -1,38 +1,13 @@
-import '../css/app.css';
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { ZiggyVue } from 'ziggy-js';
-import AerisAlert from './Components/AerisAlert.vue';
-import AerisBadge from './Components/AerisBadge.vue';
-import AerisButton from './Components/AerisButton.vue';
-import AerisCard from './Components/AerisCard.vue';
-import AerisCheckbox from './Components/AerisCheckbox.vue';
-import AerisField from './Components/AerisField.vue';
-import AerisIconButton from './Components/AerisIconButton.vue';
-import AerisInput from './Components/AerisInput.vue';
-import AerisLogo from './Components/AerisLogo.vue';
-import AerisNavLink from './Components/AerisNavLink.vue';
-import AerisSelect from './Components/AerisSelect.vue';
-import AerisSwitch from './Components/AerisSwitch.vue';
-import AerisTable from './Components/AerisTable.vue';
+import { loadTheme, resolvePageLoader } from './theme/runtime';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Moon';
 
-const aerisComponents = {
-    AerisAlert,
-    AerisBadge,
-    AerisButton,
-    AerisCard,
-    AerisCheckbox,
-    AerisField,
-    AerisIconButton,
-    AerisInput,
-    AerisLogo,
-    AerisNavLink,
-    AerisSelect,
-    AerisSwitch,
-    AerisTable,
-};
+const requestedThemeId = document.documentElement.dataset.theme || 'aeris';
+const themeLoaders = import.meta.glob('/resources/themes/*/index.js');
+const themePages = import.meta.glob('/resources/themes/*/Pages/**/*.vue');
 
 // Cada modulo publica sus propias paginas Inertia bajo su propia carpeta:
 //   Modules/{NombreModulo}/resources/js/Pages/**/*.vue
@@ -41,34 +16,38 @@ const aerisComponents = {
 // sin que este archivo necesite conocer que modulos existen.
 const modulePages = import.meta.glob('/Modules/*/resources/js/Pages/**/*.vue');
 
-createInertiaApp({
-    title: (title) => (title ? `${title} · ${appName}` : appName),
-    resolve: (name) => {
-        const [moduleDir, ...rest] = name.split('/');
-        const path = `/Modules/${moduleDir}/resources/js/Pages/${rest.join('/')}.vue`;
-        const loader = modulePages[path];
+async function bootstrap() {
+    const activeTheme = await loadTheme(themeLoaders, requestedThemeId);
 
-        if (!loader) {
-            throw new Error(
-                `[Moon] No se encontro la pagina Inertia "${name}" (se esperaba en ${path}). ` +
-                `Revisa que el modulo "${moduleDir}" exista y registre esa vista.`
-            );
-        }
+    return createInertiaApp({
+        title: (title) => (title ? `${title} · ${appName}` : appName),
+        resolve: (name) => {
+            const loader = resolvePageLoader(name, activeTheme.id, themePages, modulePages);
 
-        return loader().then((module) => module.default ?? module);
-    },
-    setup({ el, App, props, plugin }) {
-        const vueApp = createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .use(ZiggyVue);
+            if (!loader) {
+                throw new Error(
+                    `[Moon] No se encontro la pagina Inertia "${name}" en el tema ` +
+                    `"${activeTheme.id}" ni en su modulo.`
+                );
+            }
 
-        Object.entries(aerisComponents).forEach(([name, component]) => {
-            vueApp.component(name, component);
-        });
+            return loader().then((module) => module.default ?? module);
+        },
+        setup({ el, App, props, plugin }) {
+            const vueApp = createApp({ render: () => h(App, props) })
+                .use(plugin)
+                .use(ZiggyVue);
 
-        vueApp.mount(el);
-    },
-    progress: {
-        color: '#e62117',
-    },
-});
+            Object.entries({ ...activeTheme.components, ...activeTheme.layouts }).forEach(([name, component]) => {
+                vueApp.component(name, component);
+            });
+
+            vueApp.mount(el);
+        },
+        progress: {
+            color: activeTheme.progressColor,
+        },
+    });
+}
+
+bootstrap();

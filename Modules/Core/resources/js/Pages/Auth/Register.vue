@@ -1,5 +1,4 @@
 <script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
@@ -19,35 +18,35 @@ function submit() {
 <template>
     <Head title="Crear cuenta" />
 
-    <GuestLayout title="Crea tu cuenta" subtitle="El mismo usuario y contrasena te serviran para jugar">
+    <ThemeGuestLayout title="Crea tu cuenta" subtitle="El mismo usuario y contrasena te serviran para jugar">
         <form class="space-y-5" @submit.prevent="submit">
-            <AerisField
+            <ThemeField
                 for="username"
                 label="Usuario"
                 help="Maximo 16 caracteres, solo letras y numeros."
                 :error="form.errors.username"
             >
-                <AerisInput id="username" v-model="form.username" autofocus placeholder="MaxDe16Caracteres" />
-            </AerisField>
+                <ThemeInput id="username" v-model="form.username" autofocus placeholder="MaxDe16Caracteres" />
+            </ThemeField>
 
-            <AerisField for="email" label="Correo electronico" :error="form.errors.email">
-                <AerisInput id="email" v-model="form.email" type="email" placeholder="tucorreo@ejemplo.com" />
-            </AerisField>
+            <ThemeField for="email" label="Correo electronico" :error="form.errors.email">
+                <ThemeInput id="email" v-model="form.email" type="email" placeholder="tucorreo@ejemplo.com" />
+            </ThemeField>
 
-            <AerisField for="password" label="Contrasena" :error="form.errors.password">
-                <AerisInput id="password" v-model="form.password" type="password" placeholder="Maximo 16 caracteres" />
-            </AerisField>
+            <ThemeField for="password" label="Contrasena" :error="form.errors.password">
+                <ThemeInput id="password" v-model="form.password" type="password" placeholder="Maximo 16 caracteres" />
+            </ThemeField>
 
-            <AerisField for="password_confirmation" label="Confirmar contrasena" :error="form.errors.password_confirmation">
-                <AerisInput id="password_confirmation" v-model="form.password_confirmation" type="password" placeholder="Repite tu contrasena" />
-            </AerisField>
+            <ThemeField for="password_confirmation" label="Confirmar contrasena" :error="form.errors.password_confirmation">
+                <ThemeInput id="password_confirmation" v-model="form.password_confirmation" type="password" placeholder="Repite tu contrasena" />
+            </ThemeField>
 
-            <AerisButton type="submit" :disabled="form.processing" block>Crear cuenta</AerisButton>
+            <ThemeButton type="submit" :disabled="form.processing" block>Crear cuenta</ThemeButton>
 
-            <p class="text-center text-sm text-aeris-on-surface-muted">
+            <p class="text-center text-sm text-theme-on-surface-muted">
                 Ya tienes cuenta?
-                <Link href="/login" class="aeris-link">Inicia sesion</Link>
+                <Link href="/login" class="theme-link">Inicia sesion</Link>
             </p>
         </form>
-    </GuestLayout>
+    </ThemeGuestLayout>
 </template>

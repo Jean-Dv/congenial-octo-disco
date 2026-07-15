@@ -1,5 +1,4 @@
 <script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
@@ -24,21 +23,21 @@ function submit() {
 <template>
     <Head title="Restablecer contrasena" />
 
-    <GuestLayout title="Restablece tu contrasena" subtitle="Se actualizara en el panel y en cada reino">
+    <ThemeGuestLayout title="Restablece tu contrasena" subtitle="Se actualizara en el panel y en cada reino">
         <form class="space-y-5" @submit.prevent="submit">
-            <AerisField for="email" label="Correo electronico" :error="form.errors.email">
-                <AerisInput id="email" v-model="form.email" type="email" />
-            </AerisField>
+            <ThemeField for="email" label="Correo electronico" :error="form.errors.email">
+                <ThemeInput id="email" v-model="form.email" type="email" />
+            </ThemeField>
 
-            <AerisField for="password" label="Nueva contrasena" :error="form.errors.password">
-                <AerisInput id="password" v-model="form.password" type="password" autofocus placeholder="Maximo 16 caracteres" />
-            </AerisField>
+            <ThemeField for="password" label="Nueva contrasena" :error="form.errors.password">
+                <ThemeInput id="password" v-model="form.password" type="password" autofocus placeholder="Maximo 16 caracteres" />
+            </ThemeField>
 
-            <AerisField for="password_confirmation" label="Confirmar nueva contrasena" :error="form.errors.password_confirmation">
-                <AerisInput id="password_confirmation" v-model="form.password_confirmation" type="password" />
-            </AerisField>
+            <ThemeField for="password_confirmation" label="Confirmar nueva contrasena" :error="form.errors.password_confirmation">
+                <ThemeInput id="password_confirmation" v-model="form.password_confirmation" type="password" />
+            </ThemeField>
 
-            <AerisButton type="submit" :disabled="form.processing" block>Restablecer contrasena</AerisButton>
+            <ThemeButton type="submit" :disabled="form.processing" block>Restablecer contrasena</ThemeButton>
         </form>
-    </GuestLayout>
+    </ThemeGuestLayout>
 </template>

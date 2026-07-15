@@ -1,5 +1,4 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { Plus, Pencil, Trash2 } from 'lucide-vue-next';
 
@@ -19,19 +18,19 @@ function destroyRealm(realm) {
 <template>
     <Head title="Reinos" />
 
-    <AppLayout title="Reinos">
+    <ThemeAppLayout title="Reinos">
         <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-sm text-aeris-on-surface-muted">
+            <p class="text-sm text-theme-on-surface-muted">
                 Cada reino habilitado recibe una cuenta de juego automaticamente al registrarse un usuario.
             </p>
 
-            <AerisButton href="/admin/realms/create">
+            <ThemeButton href="/admin/realms/create">
                 <Plus class="h-4 w-4" />
                 Nuevo reino
-            </AerisButton>
+            </ThemeButton>
         </div>
 
-        <AerisTable>
+        <ThemeTable>
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -43,42 +42,42 @@ function destroyRealm(realm) {
             <tbody>
                 <tr v-for="realm in realms" :key="realm.id">
                     <td>
-                        <p class="font-medium text-aeris-on-surface">{{ realm.name }}</p>
-                        <p class="font-mono-data text-xs text-aeris-on-surface-muted">{{ realm.slug }}</p>
+                        <p class="font-medium text-theme-on-surface">{{ realm.name }}</p>
+                        <p class="font-mono-data text-xs text-theme-on-surface-muted">{{ realm.slug }}</p>
                     </td>
                     <td>
-                        <span class="text-aeris-on-surface-muted">{{ realm.core_type_label }}</span>
-                        <AerisBadge
+                        <span class="text-theme-on-surface-muted">{{ realm.core_type_label }}</span>
+                        <ThemeBadge
                             v-if="!realm.has_full_support"
                             tone="critical"
                             class="ml-2"
                             title="La estrategia de password para este core todavia no esta implementada"
                         >
                             sin implementar
-                        </AerisBadge>
+                        </ThemeBadge>
                     </td>
                     <td>
-                        <AerisBadge :tone="realm.enabled ? 'active' : 'muted'">
+                        <ThemeBadge :tone="realm.enabled ? 'active' : 'muted'">
                             {{ realm.enabled ? 'Habilitado' : 'Deshabilitado' }}
-                        </AerisBadge>
+                        </ThemeBadge>
                     </td>
                     <td class="text-right">
                         <div class="flex items-center justify-end gap-1">
-                            <AerisIconButton :href="`/admin/realms/${realm.id}/edit`" title="Editar reino">
+                            <ThemeIconButton :href="`/admin/realms/${realm.id}/edit`" title="Editar reino">
                                 <Pencil class="h-4 w-4" />
-                            </AerisIconButton>
-                            <AerisIconButton title="Eliminar reino" variant="danger" @click="destroyRealm(realm)">
+                            </ThemeIconButton>
+                            <ThemeIconButton title="Eliminar reino" variant="danger" @click="destroyRealm(realm)">
                                 <Trash2 class="h-4 w-4" />
-                            </AerisIconButton>
+                            </ThemeIconButton>
                         </div>
                     </td>
                 </tr>
                 <tr v-if="realms.length === 0">
-                    <td colspan="4" class="py-8 text-center text-aeris-on-surface-muted">
+                    <td colspan="4" class="py-8 text-center text-theme-on-surface-muted">
                         Todavia no hay reinos configurados.
                     </td>
                 </tr>
             </tbody>
-        </AerisTable>
-    </AppLayout>
+        </ThemeTable>
+    </ThemeAppLayout>
 </template>

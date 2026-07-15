@@ -13,6 +13,7 @@ No incluye módulos de contenido (News, Changelog, Vote, etc.) — eso es intenc
 - [Comunicación remota (SOAP hoy, lo que sea mañana)](#comunicación-remota-soap-hoy-lo-que-sea-mañana)
 - [Aprovisionamiento asíncrono y seguridad de las colas](#aprovisionamiento-asíncrono-y-seguridad-de-las-colas)
 - [Sistema de módulos](#sistema-de-módulos)
+- [Sistema de temas](#sistema-de-temas)
 - [Puesta en marcha](#puesta-en-marcha)
 - [Verificación realizada](#verificación-realizada)
 - [Qué falta / limitaciones conocidas](#qué-falta--limitaciones-conocidas)
@@ -142,6 +143,12 @@ Solo falta:
 2. Ejecutar `php artisan migrate` para sus migraciones.
 
 Un módulo recién detectado queda **habilitado por defecto** (tal como se pidió). Desde `/admin/modules` se puede activar/desactivar cualquiera que no sea `is_core`. Cualquier módulo puede además proteger sus propias rutas con `->middleware('module:slug')` (middleware `Modules\Core\Http\Middleware\EnsureModuleIsEnabled`, reutilizable) para que, si se deshabilita, sus rutas respondan 404 de verdad y no solo desaparezcan del menú.
+
+## Sistema de temas
+
+Un solo tema controla la web pública, autenticación, dashboard y administración. Aeris conserva el diseño actual y es el fallback seguro. Selecciona otro paquete incluido con `APP_THEME=theme-id`; las páginas del tema pueden reemplazar vistas Inertia completas y las demás siguen usando la vista de su módulo con componentes temáticos.
+
+La estructura, los contratos y el procedimiento completo para crear, validar y cambiar un tema están en [docs/themes.md](docs/themes.md).
 
 ## Puesta en marcha
 

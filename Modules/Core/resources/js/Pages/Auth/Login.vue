@@ -1,5 +1,4 @@
 <script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
@@ -18,27 +17,27 @@ function submit() {
 <template>
     <Head title="Iniciar sesion" />
 
-    <GuestLayout title="Bienvenido de vuelta" subtitle="Entra a tu panel de reino">
+    <ThemeGuestLayout title="Bienvenido de vuelta" subtitle="Entra a tu panel de reino">
         <form class="space-y-5" @submit.prevent="submit">
-            <AerisField for="email" label="Correo electronico" :error="form.errors.email">
-                <AerisInput id="email" v-model="form.email" type="email" autofocus placeholder="tucorreo@ejemplo.com" />
-            </AerisField>
+            <ThemeField for="email" label="Correo electronico" :error="form.errors.email">
+                <ThemeInput id="email" v-model="form.email" type="email" autofocus placeholder="tucorreo@ejemplo.com" />
+            </ThemeField>
 
-            <AerisField for="password" label="Contrasena" :error="form.errors.password">
-                <AerisInput id="password" v-model="form.password" type="password" placeholder="********" />
-            </AerisField>
+            <ThemeField for="password" label="Contrasena" :error="form.errors.password">
+                <ThemeInput id="password" v-model="form.password" type="password" placeholder="********" />
+            </ThemeField>
 
             <div class="flex items-center justify-between gap-3 text-sm">
-                <AerisCheckbox v-model="form.remember">Recordarme</AerisCheckbox>
-                <Link href="/forgot-password" class="aeris-link">Olvidaste tu contrasena?</Link>
+                <ThemeCheckbox v-model="form.remember">Recordarme</ThemeCheckbox>
+                <Link href="/forgot-password" class="theme-link">Olvidaste tu contrasena?</Link>
             </div>
 
-            <AerisButton type="submit" :disabled="form.processing" block>Entrar</AerisButton>
+            <ThemeButton type="submit" :disabled="form.processing" block>Entrar</ThemeButton>
 
-            <p class="text-center text-sm text-aeris-on-surface-muted">
+            <p class="text-center text-sm text-theme-on-surface-muted">
                 No tienes cuenta?
-                <Link href="/register" class="aeris-link">Registrate</Link>
+                <Link href="/register" class="theme-link">Registrate</Link>
             </p>
         </form>
-    </GuestLayout>
+    </ThemeGuestLayout>
 </template>

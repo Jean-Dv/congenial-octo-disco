@@ -4,9 +4,12 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Moon\ThemeKit\ActiveThemeResolver;
 
 class HandleInertiaRequests extends Middleware
 {
+    public function __construct(private readonly ActiveThemeResolver $themeResolver) {}
+
     /**
      * The root template that's loaded on the first page visit.
      */
@@ -30,13 +33,14 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user()?->only(['id', 'name', 'email', 'locale']),
+                'user' => $request->user()?->only(['id', 'name', 'email', 'locale', 'is_admin']),
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
             ],
             'locale' => app()->getLocale(),
+            'theme' => $this->themeResolver->resolve()->metadata(),
         ];
     }
 }

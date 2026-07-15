@@ -7,11 +7,11 @@ defineProps({
 </script>
 
 <template>
-    <AerisButton
+    <ThemeButton
         :type="type"
         :disabled="disabled"
         :block="block"
     >
         <slot />
-    </AerisButton>
+    </ThemeButton>
 </template>

@@ -20,15 +20,15 @@ const sizeClasses = computed(() => ({
 }[props.size] ?? 'min-h-10 px-4 py-2.5 text-sm'));
 
 const variantClasses = computed(() => ({
-    primary: 'border-transparent bg-aeris-primary-container text-aeris-on-primary-container shadow-[0_0_24px_rgba(230,33,23,0.18)] hover:bg-aeris-primary hover:text-aeris-on-primary',
-    secondary: 'border-aeris-border bg-aeris-surface-container-low/80 text-aeris-on-surface hover:border-aeris-primary-container hover:bg-aeris-primary-container/10',
-    ghost: 'border-transparent bg-transparent text-aeris-on-surface-variant hover:bg-aeris-primary-container/10 hover:text-aeris-on-surface',
-    danger: 'border-aeris-error-container/60 bg-aeris-error-container text-aeris-on-error-container hover:border-aeris-error hover:bg-aeris-error/20',
-}[props.variant] ?? 'border-transparent bg-aeris-primary-container text-aeris-on-primary-container'));
+    primary: 'border-transparent bg-theme-primary-container text-theme-on-primary-container shadow-[0_0_24px_rgba(230,33,23,0.18)] hover:bg-theme-primary hover:text-theme-on-primary',
+    secondary: 'border-theme-border bg-theme-surface-container-low/80 text-theme-on-surface hover:border-theme-primary-container hover:bg-theme-primary-container/10',
+    ghost: 'border-transparent bg-transparent text-theme-on-surface-variant hover:bg-theme-primary-container/10 hover:text-theme-on-surface',
+    danger: 'border-theme-error-container/60 bg-theme-error-container text-theme-on-error-container hover:border-theme-error hover:bg-theme-error/20',
+}[props.variant] ?? 'border-transparent bg-theme-primary-container text-theme-on-primary-container'));
 
 const buttonClasses = computed(() => [
     'inline-flex items-center justify-center gap-2 rounded border font-semibold transition duration-150',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aeris-primary-container/45 focus-visible:ring-offset-2 focus-visible:ring-offset-aeris-background',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-primary-container/45 focus-visible:ring-offset-2 focus-visible:ring-offset-theme-background',
     'disabled:cursor-not-allowed disabled:opacity-50',
     props.block ? 'w-full' : '',
     props.disabled ? 'pointer-events-none opacity-50' : '',

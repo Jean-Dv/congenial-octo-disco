@@ -3,7 +3,9 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "test": "pnpm run test:js",
+        "test:js": "node resources/js/theme/runtime.test.js"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^2.0",
