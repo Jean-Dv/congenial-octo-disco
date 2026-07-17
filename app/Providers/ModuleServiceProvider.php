@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Moon\ModuleKit\ModuleManager;
 use Moon\ModuleKit\Contracts\ModuleRepositoryInterface;
+use Moon\ModuleKit\ModuleManager;
 
 class ModuleServiceProvider extends ServiceProvider
 {
@@ -14,14 +14,16 @@ class ModuleServiceProvider extends ServiceProvider
             return new ModuleManager(config('modules.path'));
         });
 
-        /** @var ModuleManager $manager */
-        $manager = $this->app->make(ModuleManager::class);
+        $this->app->booted(function (): void {
+            /** @var ModuleManager $manager */
+            $manager = $this->app->make(ModuleManager::class);
 
-        foreach ($manager->nonCore() as $manifest) {
-            if ($this->isEnabled($manifest->slug)) {
-                $this->app->register($manifest->provider);
+            foreach ($manager->nonCore() as $manifest) {
+                if ($this->isEnabled($manifest->slug)) {
+                    $this->app->register($manifest->provider);
+                }
             }
-        }
+        });
     }
 
     /**

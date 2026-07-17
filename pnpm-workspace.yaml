@@ -1,3 +1,0 @@
-allowBuilds:
-  # Vite requires this native binary to compile assets.
-  esbuild: true

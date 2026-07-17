@@ -145,29 +145,34 @@ Un módulo recién detectado queda **habilitado por defecto** (tal como se pidi�
 
 ## Puesta en marcha
 
-El entorno local usa Docker Compose para mantener las versiones de PHP, Node, pnpm y los servicios de infraestructura alineadas entre colaboradores. En la primera instalación:
+El entorno local usa Docker Compose para mantener PHP, Composer, Node, pnpm y los servicios de infraestructura alineados entre colaboradores. En Windows PowerShell, crear primero el archivo local de configuración:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+En Linux o macOS, usar `cp .env.example .env`. En Linux también se deben ajustar `APP_UID` y `APP_GID` dentro de `.env` con los valores mostrados por `id -u` e `id -g`.
 
 ```bash
-cp .env.example .env
-
-# Prepara la imagen y las dependencias antes de iniciar la cola.
+# Prepara la imagen y guarda dependencias en volúmenes Docker.
 docker compose build app
-docker compose run --rm --no-deps app composer install
-docker compose run --rm --no-deps app pnpm install --frozen-lockfile
-docker compose run --rm --no-deps app php artisan key:generate
+docker compose run --rm --no-deps workspace composer install
+docker compose run --rm --no-deps workspace pnpm install --frozen-lockfile
+docker compose run --rm --no-deps workspace php artisan key:generate
 
 # Inicia la infraestructura, ejecuta las migraciones y levanta la web.
 docker compose up -d postgres redis mailhog
-docker compose run --rm app php artisan migrate
-docker compose run --rm --no-deps app pnpm build
+docker compose run --rm workspace php artisan migrate
+docker compose run --rm workspace php artisan moon:sync-modules
+docker compose run --rm --no-deps workspace pnpm build
 docker compose up -d
 
 # La cola ya corre como servicio "queue". Para ejecutarla manualmente:
-docker compose exec app php artisan queue:work redis --queue=provisioning,mail
+docker compose run --rm workspace php artisan queue:work redis --queue=provisioning,mail
 
 # Primer administrador (necesario para /admin/realms y /admin/modules):
 # 1. Regístrate normalmente en /register
-# 2. docker compose exec app php artisan moon:make-admin tucorreo@ejemplo.com
+# 2. docker compose run --rm workspace php artisan moon:make-admin tucorreo@ejemplo.com
 ```
 
 - App: http://localhost:8080
@@ -176,18 +181,15 @@ docker compose exec app php artisan queue:work redis --queue=provisioning,mail
 
 Si ya tienes un TrinityCore/AzerothCore real corriendo, crea el reino desde `/admin/realms` apuntando su BD `auth` y su SOAP directamente (no hace falta el `mock-realm`).
 
-La guía detallada de servicios, verificaciones, operación diaria y solución de problemas está en [`docs/development/docker.md`](docs/development/docker.md).
+La configuración común está en `docker-compose.yml`. Desarrollo añade automáticamente `docker-compose.override.yml`; staging y producción seleccionan sus imágenes inmutables mediante archivos Compose explícitos. La guía detallada está en [`docs/development/docker.md`](docs/development/docker.md).
 
 ## Verificación realizada
 
-Sin PHP/Composer con red disponible en este entorno, se verificó lo que sí se pudo:
+El entorno Docker fue construido y ejecutado con PHP 8.3, PostgreSQL, Redis, Nginx y Mailhog. Se verificaron Composer, migraciones, sincronización de módulos, compilación Vite, pruebas PHPUnit y respuestas HTTP de la portada, autenticación y health check.
 
-- **Sintaxis**: los 132 archivos `.php` del proyecto pasan `php -l` sin errores (se instaló PHP 8.3 + ext-gmp + ext-soap vía apt para esto).
-- **Coherencia de namespaces**: los 223 `use ...;` internos del proyecto resuelven a un archivo real bajo el mapeo PSR-4 (sin typos de importación).
-- **Capa de dominio 100% desacoplada**: las 36 clases/interfaces/enums de `Domain/` y del shared kernel `Moon\` cargan y son mutuamente consistentes (interfaces completamente implementadas, sin depender de Laravel en absoluto) usando un autoloader mínimo aislado. La única excepción esperada es `AbstractModule` (depende de `Illuminate\Support\ServiceProvider` a propósito, es el punto de integración con Laravel).
-- **SRP6 cross-validado contra una implementación de referencia independiente** (paquete npm `trinitycore-srp6`): mismo username/password/salt fijos → verifier byte-a-byte idéntico entre la implementación PHP de este proyecto y la librería JS. También se probó el ciclo completo generar→verificar (contraseña correcta acepta, incorrecta rechaza).
+Las imágenes de desarrollo, staging y producción parten del mismo stage PHP. Desarrollo escribe como el UID/GID configurado y aísla `vendor`, `node_modules`, cachés y logs en volúmenes Docker. Las imágenes de entrega incluyen dependencias y assets compilados sin montar el repositorio del host.
 
-Lo que **no** se pudo verificar por falta de entorno: arranque real de Laravel, migraciones contra Postgres real, ida y vuelta HTTP/Inertia, ni una conexión SOAP/MySQL real contra un worldserver. Recomendado antes de producción: correr el flujo de registro completo contra tu TrinityCore real y confirmar que el personaje puede loguear en el cliente.
+Continúa pendiente la validación contra un `worldserver` real. El servicio opcional `mock-realm` permite probar la escritura compatible con la base `auth` de TrinityCore/AzerothCore, pero no sustituye una prueba de ingreso desde el cliente WoW.
 
 ## Qué falta / limitaciones conocidas
 
@@ -195,5 +197,5 @@ Fuera de alcance a propósito en esta entrega (según lo acordado):
 - Cualquier módulo de contenido (noticias, changelog, votos, tienda, etc.).
 - Dashboard variando según `gmlevel`.
 - Sistema de roles/permisos granular: hoy solo existe una bandera `is_admin` en `users`, suficiente para proteger `/admin/*`. El primer admin se otorga por Artisan (`moon:make-admin`), no hay UI para auto-promoverse (a propósito).
-- Tests automatizados: no se escribieron todavía (se acordó explícitamente dejarlo para después), pero la capa de dominio quedó deliberadamente aislada de Laravel para que sea trivial testear con Pest cuando se retome — sin mocks de framework, solo los puertos.
+- La cobertura automatizada todavía es inicial y debe crecer junto con cada módulo y comportamiento nuevo.
 - i18n: hay `es`/`en` para el módulo Core; un selector de idioma en la UI queda para cuando haya más de un módulo con contenido traducible.

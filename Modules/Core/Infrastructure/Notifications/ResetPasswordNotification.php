@@ -29,15 +29,13 @@ final class ResetPasswordNotification extends Notification implements ShouldQueu
 
     public function toMail(mixed $notifiable): MailMessage
     {
-        // A diferencia de la verificacion de email, aqui la seguridad la
-        // da el token aleatorio (hasheado en password_reset_tokens, con
-        // expiracion en config/auth.php), no una firma en la URL.
-        $resetUrl = route('password.edit', [
+        // The reset token is hashed at rest and expires through the password broker.
+        $resetUrl = route('password.reset', [
             'token' => $this->token,
             'email' => $notifiable->getEmailForPasswordReset(),
         ]);
 
-        return (new MailMessage())
+        return (new MailMessage)
             ->subject(__('core::auth.reset_password.subject'))
             ->greeting(__('core::auth.reset_password.greeting', ['name' => $notifiable->name]))
             ->line(__('core::auth.reset_password.line'))

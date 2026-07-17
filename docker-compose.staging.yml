@@ -1,0 +1,10 @@
+services:
+    app:
+        image: ${APP_STAGING_IMAGE:-moon-cms-app:staging}
+        build:
+            target: staging
+
+    queue:
+        image: ${APP_STAGING_IMAGE:-moon-cms-app:staging}
+        build:
+            target: staging
