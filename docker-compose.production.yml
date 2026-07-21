@@ -1,0 +1,10 @@
+services:
+    app:
+        image: ${APP_IMAGE:-moon-cms-app:production}
+        build:
+            target: production
+
+    queue:
+        image: ${APP_IMAGE:-moon-cms-app:production}
+        build:
+            target: production

@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Core\Providers;
 
-use Moon\ModuleKit\AbstractModule;
-use Moon\ModuleKit\Contracts\ModuleRepositoryInterface;
-use Moon\ModuleKit\ModuleManifest;
-use Moon\RemoteConsole\Contracts\RemoteConsoleGatewayInterface;
 use Modules\Core\Application\Auth\Ports\EmailVerificationNotifierInterface;
 use Modules\Core\Application\Auth\Ports\PasswordResetNotifierInterface;
 use Modules\Core\Application\GameAccount\Ports\GameAccountJobDispatcherInterface;
 use Modules\Core\Application\Module\ToggleModuleUseCase;
 use Modules\Core\Console\Commands\MakeAdminCommand;
+use Modules\Core\Console\Commands\SynchronizeModulesCommand;
 use Modules\Core\Domain\Auth\Ports\PasswordHasherInterface;
 use Modules\Core\Domain\Auth\Ports\UserRepositoryInterface;
 use Modules\Core\Domain\GameAccount\Ports\GameAccountGatewayResolverInterface;
@@ -31,6 +28,10 @@ use Modules\Core\Infrastructure\Persistence\Eloquent\Repositories\EloquentUserRe
 use Modules\Core\Infrastructure\Queue\LaravelGameAccountJobDispatcher;
 use Modules\Core\Infrastructure\RemoteConsole\Soap\SoapRemoteConsoleGateway;
 use Modules\Core\Infrastructure\Security\LaravelPasswordHasher;
+use Moon\ModuleKit\AbstractModule;
+use Moon\ModuleKit\Contracts\ModuleRepositoryInterface;
+use Moon\ModuleKit\ModuleManifest;
+use Moon\RemoteConsole\Contracts\RemoteConsoleGatewayInterface;
 
 final class CoreServiceProvider extends AbstractModule
 {
@@ -82,6 +83,7 @@ final class CoreServiceProvider extends AbstractModule
 
         $this->commands([
             MakeAdminCommand::class,
+            SynchronizeModulesCommand::class,
         ]);
     }
 }
