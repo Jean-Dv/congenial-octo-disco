@@ -1,7 +1,4 @@
 <script setup>
-import PublicLayout from '@modules/Public/resources/js/Layouts/PublicLayout.vue';
-
-defineOptions({ layout: PublicLayout });
 
 const props = defineProps({
     serverStats: {
@@ -49,18 +46,19 @@ const maxLatency = Math.max(...(props.realmStatus.latencyHistory ?? [1]), 1);
 function categoryStyle(type) {
     if (type === 'secondary') {
         return {
-            badge: 'background: rgba(136,206,255,0.2); color: var(--color-l-secondary)',
-            title: 'color: var(--color-l-secondary)',
+            badge: 'background: rgba(136,206,255,0.2); color: var(--color-theme-public-secondary)',
+            title: 'color: var(--color-theme-public-secondary)',
         };
     }
     return {
-        badge: 'background: rgba(230,33,23,0.2); color: var(--color-l-primary)',
-        title: 'color: var(--color-l-primary)',
+        badge: 'background: rgba(230,33,23,0.2); color: var(--color-theme-public-primary)',
+        title: 'color: var(--color-theme-public-primary)',
     };
 }
 </script>
 
 <template>
+    <ThemePublicLayout>
     <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- HERO SECTION                                               -->
     <!-- ═══════════════════════════════════════════════════════════ -->
@@ -90,7 +88,7 @@ function categoryStyle(type) {
                     <div class="space-y-4">
                         <span
                             class="inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest"
-                            style="background: rgba(230,33,23,0.1); border: 1px solid rgba(230,33,23,0.2); color: var(--color-l-primary)"
+                            style="background: rgba(230,33,23,0.1); border: 1px solid rgba(230,33,23,0.2); color: var(--color-theme-public-primary)"
                         >
                             TEMPORADA 1: AETHER ASCENDANT
                         </span>
@@ -102,7 +100,7 @@ function categoryStyle(type) {
                             UN MUNDO DE AVENTURAS SIN LÍMITES
                         </h1>
 
-                        <p class="text-base leading-relaxed max-w-xl" style="color: var(--color-l-text-secondary)">
+                        <p class="text-base leading-relaxed max-w-xl" style="color: var(--color-theme-public-text-secondary)">
                             Únete a la comunidad de rol y combate más avanzada. Experimenta el WoW
                             como nunca antes con tecnología de latencia cero y contenido exclusivo.
                         </p>
@@ -112,7 +110,7 @@ function categoryStyle(type) {
                     <div class="flex flex-wrap gap-4">
                         <button
                             class="flex items-center gap-2 px-8 py-4 rounded-lg font-bold text-base hover:brightness-110 active:scale-95 transition-all"
-                            style="background-color: var(--color-l-primary-container); color: var(--color-l-on-primary-container); box-shadow: 0 8px 30px rgba(230,33,23,0.2)"
+                            style="background-color: var(--color-theme-public-primary-container); color: var(--color-theme-public-on-primary-container); box-shadow: 0 8px 30px rgba(230,33,23,0.2)"
                         >
                             <span class="material-symbols-outlined">play_arrow</span>
                             Jugar Ahora
@@ -120,7 +118,7 @@ function categoryStyle(type) {
 
                         <button
                             class="flex items-center gap-2 px-8 py-4 rounded-lg font-bold text-base hover:bg-white/5 active:scale-95 transition-all text-white"
-                            style="border: 1px solid var(--color-l-outline-variant)"
+                            style="border: 1px solid var(--color-theme-public-outline-variant)"
                         >
                             <span class="material-symbols-outlined">download</span>
                             Descargar Launcher
@@ -134,9 +132,9 @@ function categoryStyle(type) {
                             :key="stat.label"
                             class="landing-glass p-4 rounded-lg"
                         >
-                            <div class="flex items-center gap-2 mb-1" style="color: var(--color-l-primary)">
+                            <div class="flex items-center gap-2 mb-1" style="color: var(--color-theme-public-primary)">
                                 <span class="material-symbols-outlined text-[18px]">{{ stat.icon }}</span>
-                                <span class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--color-l-text-disabled)">
+                                <span class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--color-theme-public-text-disabled)">
                                     {{ stat.label }}
                                 </span>
                             </div>
@@ -154,7 +152,7 @@ function categoryStyle(type) {
     <!-- ═══════════════════════════════════════════════════════════ -->
     <main
         class="max-w-360 mx-auto px-8 py-12"
-        style="background-color: var(--color-l-bg)"
+        style="background-color: var(--color-theme-public-bg)"
     >
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
@@ -167,9 +165,9 @@ function categoryStyle(type) {
                 <div class="flex justify-between items-end mb-8">
                     <div>
                         <h2 class="text-4xl font-bold text-white" style="letter-spacing: -0.01em">Últimas Noticias</h2>
-                        <div class="h-1 w-12 mt-2 rounded-full" style="background-color: var(--color-l-primary)" />
+                        <div class="h-1 w-12 mt-2 rounded-full" style="background-color: var(--color-theme-public-primary)" />
                     </div>
-                    <a href="#" class="text-sm font-medium transition-colors hover:underline" style="color: var(--color-l-primary)">
+                    <a href="#" class="text-sm font-medium transition-colors hover:underline" style="color: var(--color-theme-public-primary)">
                         Ver todas las noticias
                     </a>
                 </div>
@@ -202,7 +200,7 @@ function categoryStyle(type) {
                                     >
                                         {{ news.category }}
                                     </span>
-                                    <span class="text-xs font-medium" style="color: var(--color-l-text-disabled)">
+                                    <span class="text-xs font-medium" style="color: var(--color-theme-public-text-disabled)">
                                         {{ news.date }}
                                     </span>
                                 </div>
@@ -216,7 +214,7 @@ function categoryStyle(type) {
                                 </h3>
 
                                 <!-- Excerpt -->
-                                <p class="text-sm leading-relaxed line-clamp-2" style="color: var(--color-l-text-secondary)">
+                                <p class="text-sm leading-relaxed line-clamp-2" style="color: var(--color-theme-public-text-secondary)">
                                     {{ news.excerpt }}
                                 </p>
                             </div>
@@ -226,15 +224,15 @@ function categoryStyle(type) {
                                 <div class="flex items-center gap-2">
                                     <div
                                         class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
-                                        style="background-color: var(--color-l-surface-container-highest)"
+                                        style="background-color: var(--color-theme-public-surface-container-highest)"
                                     >
                                         {{ news.authorInitials }}
                                     </div>
-                                    <span class="text-xs" style="color: var(--color-l-text-disabled)">{{ news.author }}</span>
+                                    <span class="text-xs" style="color: var(--color-theme-public-text-disabled)">{{ news.author }}</span>
                                 </div>
                                 <span
                                     class="font-bold text-xs flex items-center gap-1"
-                                    style="color: var(--color-l-primary)"
+                                    style="color: var(--color-theme-public-primary)"
                                 >
                                     Leer Más
                                     <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
@@ -253,7 +251,7 @@ function categoryStyle(type) {
                 <!-- Section header -->
                 <div>
                     <h2 class="text-xl font-semibold text-white">Estado del Reino</h2>
-                    <div class="h-1 w-12 mt-2 rounded-full" style="background-color: var(--color-l-primary)" />
+                    <div class="h-1 w-12 mt-2 rounded-full" style="background-color: var(--color-theme-public-primary)" />
                 </div>
 
                 <!-- Status card -->
@@ -262,7 +260,7 @@ function categoryStyle(type) {
                     <!-- Online indicator -->
                     <div class="flex items-center justify-between">
                         <div>
-                            <div class="text-sm" style="color: var(--color-l-text-disabled)">Aetheris Global</div>
+                            <div class="text-sm" style="color: var(--color-theme-public-text-disabled)">Aetheris Global</div>
                             <div class="text-xl font-semibold text-white">
                                 {{ realmStatus.online ? 'ONLINE' : 'OFFLINE' }}
                             </div>
@@ -273,20 +271,20 @@ function categoryStyle(type) {
                         >
                             <div
                                 class="w-4 h-4 rounded-full animate-pulse"
-                                :style="`background-color: ${realmStatus.online ? 'var(--color-l-status-success)' : 'var(--color-l-status-error)'}`"
+                                :style="`background-color: ${realmStatus.online ? 'var(--color-theme-public-status-success)' : 'var(--color-theme-public-status-error)'}`"
                             />
                             <div
                                 class="absolute inset-0 rounded-full border-t-2 animate-spin"
-                                :style="`border-color: ${realmStatus.online ? 'var(--color-l-status-success)' : 'var(--color-l-status-error)'}; animation-duration: 3s`"
+                                :style="`border-color: ${realmStatus.online ? 'var(--color-theme-public-status-success)' : 'var(--color-theme-public-status-error)'}; animation-duration: 3s`"
                             />
                         </div>
                     </div>
 
                     <!-- Latency graph -->
                     <div class="space-y-2">
-                        <div class="flex justify-between text-xs" style="color: var(--color-l-text-disabled)">
+                        <div class="flex justify-between text-xs" style="color: var(--color-theme-public-text-disabled)">
                             <span>Latencia Media</span>
-                            <span :style="`color: ${realmStatus.latencyStable ? 'var(--color-l-status-success)' : 'var(--color-l-status-warning)'}`">
+                            <span :style="`color: ${realmStatus.latencyStable ? 'var(--color-theme-public-status-success)' : 'var(--color-theme-public-status-warning)'}`">
                                 {{ realmStatus.latencyStable ? 'Estable' : 'Inestable' }} ({{ realmStatus.latencyMs }}ms)
                             </span>
                         </div>
@@ -305,30 +303,30 @@ function categoryStyle(type) {
                         <!-- Alliance -->
                         <div class="flex justify-between items-center">
                             <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[20px]" style="color: var(--color-l-text-disabled)">person</span>
-                                <span class="text-sm" style="color: var(--color-l-text-secondary)">Alianza</span>
+                                <span class="material-symbols-outlined text-[20px]" style="color: var(--color-theme-public-text-disabled)">person</span>
+                                <span class="text-sm" style="color: var(--color-theme-public-text-secondary)">Alianza</span>
                             </div>
-                            <span class="font-bold text-sm" style="color: var(--color-l-primary)">{{ realmStatus.alliancePct }}%</span>
+                            <span class="font-bold text-sm" style="color: var(--color-theme-public-primary)">{{ realmStatus.alliancePct }}%</span>
                         </div>
-                        <div class="w-full h-1 rounded-full overflow-hidden" style="background-color: var(--color-l-surface-container-highest)">
+                        <div class="w-full h-1 rounded-full overflow-hidden" style="background-color: var(--color-theme-public-surface-container-highest)">
                             <div
                                 class="h-full rounded-full transition-all duration-700"
-                                :style="`width: ${realmStatus.alliancePct}%; background-color: var(--color-l-primary)`"
+                                :style="`width: ${realmStatus.alliancePct}%; background-color: var(--color-theme-public-primary)`"
                             />
                         </div>
 
                         <!-- Horde -->
                         <div class="flex justify-between items-center">
                             <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[20px]" style="color: var(--color-l-text-disabled)">person</span>
-                                <span class="text-sm" style="color: var(--color-l-text-secondary)">Horda</span>
+                                <span class="material-symbols-outlined text-[20px]" style="color: var(--color-theme-public-text-disabled)">person</span>
+                                <span class="text-sm" style="color: var(--color-theme-public-text-secondary)">Horda</span>
                             </div>
-                            <span class="font-bold text-sm" style="color: var(--color-l-status-error)">{{ realmStatus.hordePct }}%</span>
+                            <span class="font-bold text-sm" style="color: var(--color-theme-public-status-error)">{{ realmStatus.hordePct }}%</span>
                         </div>
-                        <div class="w-full h-1 rounded-full overflow-hidden" style="background-color: var(--color-l-surface-container-highest)">
+                        <div class="w-full h-1 rounded-full overflow-hidden" style="background-color: var(--color-theme-public-surface-container-highest)">
                             <div
                                 class="h-full rounded-full transition-all duration-700"
-                                :style="`width: ${realmStatus.hordePct}%; background-color: var(--color-l-status-error)`"
+                                :style="`width: ${realmStatus.hordePct}%; background-color: var(--color-theme-public-status-error)`"
                             />
                         </div>
                     </div>
@@ -336,7 +334,7 @@ function categoryStyle(type) {
                     <!-- Detail stats button -->
                     <button
                         class="w-full py-3 font-bold rounded-lg text-sm flex items-center justify-center gap-2 text-white transition-colors hover:brightness-125"
-                        style="background-color: var(--color-l-surface-container-highest)"
+                        style="background-color: var(--color-theme-public-surface-container-highest)"
                     >
                         <span class="material-symbols-outlined">insert_chart</span>
                         Estadísticas Detalladas
@@ -349,7 +347,7 @@ function categoryStyle(type) {
                     style="background: linear-gradient(135deg, rgba(230,33,23,0.15), rgba(136,206,255,0.15)); border: 1px solid rgba(230,33,23,0.2)"
                 >
                     <h3 class="text-lg font-semibold text-white mb-2">Únete a Discord</h3>
-                    <p class="text-sm mb-4" style="color: var(--color-l-text-secondary)">
+                    <p class="text-sm mb-4" style="color: var(--color-theme-public-text-secondary)">
                         Recibe notificaciones instantáneas de eventos y actualizaciones.
                     </p>
                     <button
@@ -367,6 +365,7 @@ function categoryStyle(type) {
             </aside>
         </div>
     </main>
+    </ThemePublicLayout>
 </template>
 
 <style scoped>

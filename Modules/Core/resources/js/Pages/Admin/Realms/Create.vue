@@ -1,5 +1,4 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import RealmForm from './Partials/RealmForm.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 
@@ -26,7 +25,7 @@ function submit() {
 <template>
     <Head title="Nuevo reino" />
 
-    <AppLayout title="Nuevo reino">
+    <ThemeAppLayout title="Nuevo reino">
         <RealmForm :form="form" :core-types="coreTypes" submit-label="Crear reino" @submit="submit" />
-    </AppLayout>
+    </ThemeAppLayout>
 </template>

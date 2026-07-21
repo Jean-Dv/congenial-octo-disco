@@ -9,7 +9,7 @@ defineProps({
 </script>
 
 <template>
-    <AerisInput
+    <ThemeInput
         v-model="model"
         :type="type"
         :placeholder="placeholder"

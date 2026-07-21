@@ -16,18 +16,18 @@ const paddingClasses = computed(() => ({
 }[props.padding] ?? 'p-5 sm:p-6'));
 
 const toneClasses = computed(() => ({
-    default: 'border-aeris-border bg-aeris-surface-container-low/90',
-    elevated: 'border-aeris-outline-variant/70 bg-aeris-surface-container/95',
-    important: 'border-aeris-border border-t-aeris-primary-container bg-aeris-surface-container-low/90',
-}[props.tone] ?? 'border-aeris-border bg-aeris-surface-container-low/90'));
+    default: 'border-theme-border bg-theme-surface-container-low/90',
+    elevated: 'border-theme-outline-variant/70 bg-theme-surface-container/95',
+    important: 'border-theme-border border-t-theme-primary-container bg-theme-surface-container-low/90',
+}[props.tone] ?? 'border-theme-border bg-theme-surface-container-low/90'));
 </script>
 
 <template>
     <component :is="as" class="rounded-lg border backdrop-blur-sm" :class="[toneClasses, paddingClasses, tone === 'important' ? 'border-t-2' : '']">
         <header v-if="title || subtitle || $slots.actions" class="mb-5 flex items-start justify-between gap-4">
             <div class="min-w-0">
-                <h2 v-if="title" class="text-base font-semibold text-aeris-on-surface">{{ title }}</h2>
-                <p v-if="subtitle" class="mt-1 text-sm text-aeris-on-surface-muted">{{ subtitle }}</p>
+                <h2 v-if="title" class="text-base font-semibold text-theme-on-surface">{{ title }}</h2>
+                <p v-if="subtitle" class="mt-1 text-sm text-theme-on-surface-muted">{{ subtitle }}</p>
             </div>
 
             <div v-if="$slots.actions" class="shrink-0">

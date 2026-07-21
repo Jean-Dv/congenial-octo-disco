@@ -6,11 +6,11 @@ const props = defineProps({
 });
 
 const toneClasses = computed(() => ({
-    neutral: 'border-aeris-border bg-aeris-surface-container-high text-aeris-on-surface-muted',
-    active: 'border-aeris-primary-container/60 bg-aeris-primary-container/15 text-aeris-primary',
-    critical: 'border-aeris-error-container bg-aeris-error-container/35 text-aeris-error',
-    muted: 'border-aeris-border bg-aeris-surface-container-low text-aeris-on-surface-disabled',
-}[props.tone] ?? 'border-aeris-border bg-aeris-surface-container-high text-aeris-on-surface-muted'));
+    neutral: 'border-theme-border bg-theme-surface-container-high text-theme-on-surface-muted',
+    active: 'border-theme-primary-container/60 bg-theme-primary-container/15 text-theme-primary',
+    critical: 'border-theme-error-container bg-theme-error-container/35 text-theme-error',
+    muted: 'border-theme-border bg-theme-surface-container-low text-theme-on-surface-disabled',
+}[props.tone] ?? 'border-theme-border bg-theme-surface-container-high text-theme-on-surface-muted'));
 </script>
 
 <template>

@@ -50,7 +50,6 @@ function isActive(routeName) {
     }
 }
 
-console.log(route)
 </script>
 
 <template>
@@ -66,7 +65,7 @@ console.log(route)
             <Link
                 :href="safeRoute('public.home')"
                 class="font-display text-2xl font-bold tracking-tighter select-none"
-                style="color: var(--color-l-primary)"
+                style="color: var(--color-theme-public-primary)"
             >
                 MOONSHARD
             </Link>
@@ -82,8 +81,8 @@ console.log(route)
                         ? 'font-bold border-b-2 pb-1'
                         : 'hover:text-white'"
                     :style="isActive(link.routeName)
-                        ? 'color: var(--color-l-primary); border-color: var(--color-l-primary)'
-                        : 'color: var(--color-l-text-secondary)'"
+                        ? 'color: var(--color-theme-public-primary); border-color: var(--color-theme-public-primary)'
+                        : 'color: var(--color-theme-public-text-secondary)'"
                 >
                     {{ link.label }}
                 </Link>
@@ -94,16 +93,16 @@ console.log(route)
                 <Link
                     :href="safeRoute('login')"
                     class="text-sm font-medium transition-colors px-4 py-2"
-                    style="color: var(--color-l-text-secondary)"
+                    style="color: var(--color-theme-public-text-secondary)"
                     onmouseenter="this.style.color='white'"
-                    onmouseleave="this.style.color='var(--color-l-text-secondary)'"
+                    onmouseleave="this.style.color='var(--color-theme-public-text-secondary)'"
                 >
                     Login
                 </Link>
                 <Link
                     :href="safeRoute('register')"
                     class="text-sm font-bold px-6 py-2 rounded-lg hover:brightness-110 active:scale-95 transition-all"
-                    style="background-color: var(--color-l-primary-container); color: var(--color-l-on-primary-container)"
+                    style="background-color: var(--color-theme-public-primary-container); color: var(--color-theme-public-on-primary-container)"
                 >
                     Register
                 </Link>
@@ -112,7 +111,7 @@ console.log(route)
             <!-- Hamburger mobile -->
             <button
                 class="md:hidden flex flex-col gap-1.5 p-2 rounded transition-colors"
-                style="color: var(--color-l-text-secondary)"
+                style="color: var(--color-theme-public-text-secondary)"
                 aria-label="Toggle menu"
                 @click="mobileOpen = !mobileOpen"
             >
@@ -144,8 +143,8 @@ console.log(route)
                     :href="safeRoute(link.routeName)"
                     class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                     :style="isActive(link.routeName)
-                        ? 'background-color: rgba(230,33,23,0.1); color: var(--color-l-primary)'
-                        : 'color: var(--color-l-text-secondary)'"
+                        ? 'background-color: rgba(230,33,23,0.1); color: var(--color-theme-public-primary)'
+                        : 'color: var(--color-theme-public-text-secondary)'"
                     @click="mobileOpen = false"
                 >
                     {{ link.label }}
@@ -154,14 +153,14 @@ console.log(route)
                     <Link
                         :href="route('login')"
                         class="flex-1 text-center py-2 rounded-lg text-sm font-medium transition-colors"
-                        style="border: 1px solid var(--color-l-outline-variant); color: var(--color-l-text-secondary)"
+                        style="border: 1px solid var(--color-theme-public-outline-variant); color: var(--color-theme-public-text-secondary)"
                     >
                         Login
                     </Link>
                     <Link
                         :href="route('register')"
                         class="flex-1 text-center py-2 rounded-lg text-sm font-bold hover:brightness-110 transition-all"
-                        style="background-color: var(--color-l-primary-container); color: var(--color-l-on-primary-container)"
+                        style="background-color: var(--color-theme-public-primary-container); color: var(--color-theme-public-on-primary-container)"
                     >
                         Register
                     </Link>
@@ -174,12 +173,12 @@ console.log(route)
     <slot />
 
     <!-- ───────────────────────── FOOTER ───────────────────────── -->
-    <footer class="w-full py-8" style="background-color: var(--color-l-surface-container-lowest); border-top: 1px solid var(--color-l-outline-variant)">
+    <footer class="w-full py-8" style="background-color: var(--color-theme-public-surface-container-lowest); border-top: 1px solid var(--color-theme-public-outline-variant)">
         <div class="flex flex-col md:flex-row justify-between items-start px-8 max-w-360 mx-auto gap-6">
             <!-- Brand -->
             <div class="space-y-4">
-                <div class="font-display text-xl font-bold" style="color: var(--color-l-text-primary)">AETHERIS</div>
-                <p class="text-xs max-w-xs" style="color: var(--color-l-text-disabled)">
+                <div class="font-display text-xl font-bold" style="color: var(--color-theme-public-text-primary)">AETHERIS</div>
+                <p class="text-xs max-w-xs" style="color: var(--color-theme-public-text-disabled)">
                     © 2024 Aetheris WoW. All rights reserved.<br>
                     Not affiliated with Blizzard Entertainment.
                 </p>
@@ -187,27 +186,27 @@ console.log(route)
 
             <!-- Legal links -->
             <div class="grid grid-cols-2 gap-x-12 gap-y-4">
-                <a href="#" class="text-xs transition-colors" style="color: var(--color-l-text-disabled)">Terms of Service</a>
-                <a href="#" class="text-xs transition-colors" style="color: var(--color-l-text-disabled)">Privacy Policy</a>
-                <a href="#" class="text-xs transition-colors" style="color: var(--color-l-text-disabled)">Refund Policy</a>
-                <a href="#" class="text-xs transition-colors" style="color: var(--color-l-text-disabled)">Contact Us</a>
+                <a href="#" class="text-xs transition-colors" style="color: var(--color-theme-public-text-disabled)">Terms of Service</a>
+                <a href="#" class="text-xs transition-colors" style="color: var(--color-theme-public-text-disabled)">Privacy Policy</a>
+                <a href="#" class="text-xs transition-colors" style="color: var(--color-theme-public-text-disabled)">Refund Policy</a>
+                <a href="#" class="text-xs transition-colors" style="color: var(--color-theme-public-text-disabled)">Contact Us</a>
             </div>
 
             <!-- Social icons -->
             <div class="flex gap-4">
                 <div
                     class="w-10 h-10 rounded-lg flex items-center justify-center cursor-pointer transition-colors"
-                    style="background-color: var(--color-l-surface-container); color: var(--color-l-text-disabled)"
-                    onmouseenter="this.style.color='var(--color-l-primary)'"
-                    onmouseleave="this.style.color='var(--color-l-text-disabled)'"
+                    style="background-color: var(--color-theme-public-surface-container); color: var(--color-theme-public-text-disabled)"
+                    onmouseenter="this.style.color='var(--color-theme-public-primary)'"
+                    onmouseleave="this.style.color='var(--color-theme-public-text-disabled)'"
                 >
                     <span class="material-symbols-outlined text-[20px]">share</span>
                 </div>
                 <div
                     class="w-10 h-10 rounded-lg flex items-center justify-center cursor-pointer transition-colors"
-                    style="background-color: var(--color-l-surface-container); color: var(--color-l-text-disabled)"
-                    onmouseenter="this.style.color='var(--color-l-primary)'"
-                    onmouseleave="this.style.color='var(--color-l-text-disabled)'"
+                    style="background-color: var(--color-theme-public-surface-container); color: var(--color-theme-public-text-disabled)"
+                    onmouseenter="this.style.color='var(--color-theme-public-primary)'"
+                    onmouseleave="this.style.color='var(--color-theme-public-text-disabled)'"
                 >
                     <span class="material-symbols-outlined text-[20px]">language</span>
                 </div>

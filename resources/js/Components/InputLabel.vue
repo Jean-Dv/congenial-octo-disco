@@ -6,7 +6,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <label :for="props.for || undefined" class="mb-1.5 block font-mono-data text-xs font-bold uppercase text-aeris-on-surface-variant">
+    <label :for="props.for || undefined" class="mb-1.5 block font-mono-data text-xs font-bold uppercase text-theme-on-surface-variant">
         <slot>{{ value }}</slot>
     </label>
 </template>
