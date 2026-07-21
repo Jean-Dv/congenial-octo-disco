@@ -1,4 +1,5 @@
 <script setup>
+import homeHeroImage from '../../../images/hero-1.webp';
 
 const props = defineProps({
     serverStats: {
@@ -74,7 +75,7 @@ function categoryStyle(type) {
             <!-- Image -->
             <div
                 class="w-full h-full bg-cover bg-center"
-                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC3v5806pDS3uAUE-daTxyokmOcixXYomMi1V-oIzoM-KfYcVOwJRNxBZ5I_JRhDp9GdMOKWPHlzmalcQzOmGDqI8hefk3qA0MPYRYPLTq-Yn7STIB-VpnVKOe_AS5FmbwgI4rWlEVfW7VXsATKG2QB5JJC-JIZsKsgV26SM7ymBtoP7EnBOiWTK-wjJjb6kyfDBXKGsDbMvUMnjr4pPm6uRAxLJ-dPzCtVCPHb3KK7j7IpeWK7qpxRoyZZ4Ey3WerjhKcjmt7TcF0')"
+                :style="{ backgroundImage: `url(${homeHeroImage})` }"
                 aria-hidden="true"
             />
         </div>
