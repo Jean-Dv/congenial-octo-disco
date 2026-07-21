@@ -153,7 +153,6 @@ function categoryStyle(type) {
     <!-- ═══════════════════════════════════════════════════════════ -->
     <main
         class="max-w-360 mx-auto px-8 py-12"
-        style="background-color: var(--color-theme-public-bg)"
     >
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 

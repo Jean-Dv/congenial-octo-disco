@@ -35,10 +35,6 @@ const navLinks = [
     { label: 'Home',      routeName: 'public.home' },
     { label: 'News',      routeName: 'public.news' },
     { label: 'Downloads', routeName: 'public.downloads' },
-    { label: 'Ranking',   routeName: 'public.ranking' },
-    { label: 'Armory',    routeName: 'public.armory' },
-    { label: 'Store',     routeName: 'public.store' },
-    { label: 'Support',   routeName: 'public.support' },
     { label: 'Discord',   routeName: 'public.discord' },
 ];
 
