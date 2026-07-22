@@ -1,6 +1,6 @@
 <script setup>
 import { usePage, router } from '@inertiajs/vue3';
-import { LayoutDashboard, Server, Blocks, LogOut, Menu } from 'lucide-vue-next';
+import { LayoutDashboard, Server, Blocks, Newspaper, LogOut, Menu } from 'lucide-vue-next';
 import { ref, computed } from 'vue';
 
 defineProps({
@@ -61,6 +61,15 @@ function isActive(href) {
                     >
                         <template #icon><Blocks class="h-4 w-4" /></template>
                         Modulos
+                    </ThemeNavLink>
+
+                    <ThemeNavLink
+                        v-if="page.props.enabledModules?.news"
+                        href="/admin/news"
+                        :active="isActive('/admin/news')"
+                    >
+                        <template #icon><Newspaper class="h-4 w-4" /></template>
+                        Noticias
                     </ThemeNavLink>
                 </template>
             </nav>

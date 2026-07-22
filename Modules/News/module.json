@@ -1,0 +1,9 @@
+{
+    "slug": "news",
+    "name": "News",
+    "description": "Administracion y publicacion de noticias del servidor.",
+    "version": "1.0.0",
+    "is_core": false,
+    "provider": "Modules\\News\\Providers\\NewsServiceProvider",
+    "dependencies": ["core"]
+}

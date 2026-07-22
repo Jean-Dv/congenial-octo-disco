@@ -1,6 +1,8 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
+
+const page = usePage();
 
 // ─────────────────────────────────────────────
 // Scroll effect — navbar se opacifica al bajar
@@ -31,12 +33,12 @@ function safeRoute(name) {
     }
 }
 
-const navLinks = [
-    { label: 'Home',      routeName: 'public.home' },
-    { label: 'News',      routeName: 'public.news' },
-    { label: 'Downloads', routeName: 'public.downloads' },
-    { label: 'Discord',   routeName: 'public.discord' },
-];
+const navLinks = computed(() => [
+    { label: 'Home', routeName: 'public.home', visible: true },
+    { label: 'News', routeName: 'public.news', visible: !!page.props.enabledModules?.news },
+    { label: 'Downloads', routeName: 'public.downloads', visible: true },
+    { label: 'Discord', routeName: 'public.discord', visible: true },
+].filter((link) => link.visible));
 
 function isActive(routeName) {
     try {

@@ -23,5 +23,9 @@ final class ModuleSynchronizationCommandTest extends TestCase
             'slug' => 'public',
             'enabled' => true,
         ]);
+        $this->assertDatabaseHas('modules', [
+            'slug' => 'news',
+            'enabled' => true,
+        ]);
     }
 }

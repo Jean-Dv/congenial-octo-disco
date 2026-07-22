@@ -1,4 +1,5 @@
 <script setup>
+import { Link } from '@inertiajs/vue3';
 import homeHeroImage from '../../../images/hero-1.webp';
 
 const props = defineProps({
@@ -27,6 +28,10 @@ const props = defineProps({
     latestNews: {
         type: Array,
         default: () => [],
+    },
+    newsEnabled: {
+        type: Boolean,
+        default: false,
     },
 });
 
@@ -159,7 +164,7 @@ function categoryStyle(type) {
             <!-- ─────────────────────────────────────────── -->
             <!-- LEFT: News Section (8 cols)                 -->
             <!-- ─────────────────────────────────────────── -->
-            <section class="lg:col-span-8 space-y-4">
+            <section v-if="newsEnabled" class="lg:col-span-8 space-y-4">
 
                 <!-- Section header -->
                 <div class="flex justify-between items-end mb-8">
@@ -167,16 +172,17 @@ function categoryStyle(type) {
                         <h2 class="text-4xl font-bold text-white" style="letter-spacing: -0.01em">Últimas Noticias</h2>
                         <div class="h-1 w-12 mt-2 rounded-full" style="background-color: var(--color-theme-public-primary)" />
                     </div>
-                    <a href="#" class="text-sm font-medium transition-colors hover:underline" style="color: var(--color-theme-public-primary)">
+                    <Link href="/news" class="text-sm font-medium transition-colors hover:underline" style="color: var(--color-theme-public-primary)">
                         Ver todas las noticias
-                    </a>
+                    </Link>
                 </div>
 
                 <!-- News cards -->
                 <div class="space-y-6">
-                    <article
+                    <Link
                         v-for="news in latestNews"
                         :key="news.id"
+                        :href="`/news/${news.slug}`"
                         class="landing-glass rounded-xl overflow-hidden flex flex-col md:flex-row group cursor-pointer transition-all duration-300 hover:border-[rgba(230,33,23,0.3)]"
                         style="border: 1px solid rgba(255,255,255,0.05)"
                     >
@@ -184,7 +190,7 @@ function categoryStyle(type) {
                         <div class="w-full md:w-64 h-48 md:h-auto overflow-hidden shrink-0">
                             <div
                                 class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-                                :style="`background-image: url('${news.image}')`"
+                                :style="`background-image: url('${news.coverUrl}')`"
                                 :aria-label="news.title"
                             />
                         </div>
@@ -196,19 +202,19 @@ function categoryStyle(type) {
                                 <div class="flex items-center gap-3 mb-3">
                                     <span
                                         class="text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider"
-                                        :style="categoryStyle(news.type).badge"
+                                        :style="categoryStyle('primary').badge"
                                     >
-                                        {{ news.category }}
+                                        {{ news.category.name }}
                                     </span>
                                     <span class="text-xs font-medium" style="color: var(--color-theme-public-text-disabled)">
-                                        {{ news.date }}
+                                        {{ news.publishedAtLabel }}
                                     </span>
                                 </div>
 
                                 <!-- Title -->
                                 <h3
                                     class="text-xl font-semibold text-white mb-2 transition-colors group-hover:brightness-125"
-                                    :style="{ '--hover-color': categoryStyle(news.type).title }"
+                                    :style="{ '--hover-color': categoryStyle('primary').title }"
                                 >
                                     {{ news.title }}
                                 </h3>
@@ -239,7 +245,11 @@ function categoryStyle(type) {
                                 </span>
                             </div>
                         </div>
-                    </article>
+                    </Link>
+
+                    <div v-if="latestNews.length === 0" class="landing-glass rounded-xl p-8 text-center text-sm" style="color: var(--color-theme-public-text-secondary)">
+                        Todavia no hay noticias publicadas.
+                    </div>
                 </div>
             </section>
 
