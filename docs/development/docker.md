@@ -196,6 +196,8 @@ No ejecutar esta orden sobre datos que deban conservarse.
 
 ## Solución de problemas
 
+- Si Laravel muestra `could not find driver` para `pgsql`, reconstruir los servicios PHP después de actualizar el Dockerfile: `docker compose -f docker-compose.dev.yml build php-fpm worker workspace`, recrearlos con `docker compose -f docker-compose.dev.yml up -d --force-recreate php-fpm worker workspace web` y confirmar con `docker compose -f docker-compose.dev.yml run --rm workspace php -m` que aparecen `pdo_pgsql` y `pgsql`. También se recrea `web` para que Nginx resuelva la nueva dirección interna de PHP-FPM.
+- Si `pnpm` no se reconoce dentro del workspace, reconstruirlo con `docker compose -f docker-compose.dev.yml build workspace`. Después se puede compilar con `docker compose -f docker-compose.dev.yml run --rm --no-deps workspace pnpm run build`; no es necesario cargar NVM manualmente.
 - Si `queue` termina, revisar primero `docker compose logs queue`, repetir `composer install` y comprobar el volumen `moon-vendor`.
 - Si aparece `Permission denied` en `storage/logs`, recrear `app` y `queue` para que el entrypoint repare el volumen: `docker compose up -d --force-recreate app queue`.
 - Si Linux crea archivos con otro propietario, corregir `APP_UID` y `APP_GID`, reconstruir `app` y recrear solamente los volúmenes locales afectados.

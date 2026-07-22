@@ -6,6 +6,7 @@ FROM php:8.4-cli
 ARG UID=1000
 ARG GID=1000
 ARG NODE_VERSION=22.0.0
+ARG PNPM_VERSION=9.15.9
 
 # Install system dependencies and build libraries
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -66,13 +67,23 @@ RUN if getent group ${GID}; then \
 # Switch to the non-root user to install NVM and Node.js
 USER www
 
+ENV NVM_DIR=/home/www/.nvm
+ENV PATH="${NVM_DIR}/versions/node/v${NODE_VERSION}/bin:${PATH}"
+
 # Install NVM (Node Version Manager) as the www user
-RUN export NVM_DIR="$HOME/.nvm" && \
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash && \
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash && \
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
     nvm install ${NODE_VERSION} && \
     nvm alias default ${NODE_VERSION} && \
     nvm use default
+
+# Keep Node and pnpm available to direct Docker Compose commands. Compose
+# does not start an interactive shell, so relying on .bashrc alone would make
+# `docker compose run workspace pnpm ...` fail with "command not found".
+RUN corepack enable && \
+    corepack prepare "pnpm@${PNPM_VERSION}" --activate && \
+    node --version && \
+    pnpm --version
 
 # Ensure NVM is available for all future shells
 RUN echo 'export NVM_DIR="$HOME/.nvm"' >> /home/www/.bashrc && \
