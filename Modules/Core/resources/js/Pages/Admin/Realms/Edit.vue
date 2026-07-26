@@ -27,6 +27,6 @@ function submit() {
     <Head title="Editar reino" />
 
     <ThemeAppLayout :title="`Editar reino: ${realm.name}`">
-        <RealmForm :form="form" :core-types="coreTypes" submit-label="Guardar cambios" @submit="submit" />
+        <RealmForm :form="form" :core-types="coreTypes" :is-editing="true" submit-label="Guardar cambios" @submit="submit" />
     </ThemeAppLayout>
 </template>

@@ -13,6 +13,10 @@ return [
         'success' => '¡Cuenta creada! Estamos preparando tu personaje en cada reino, puedes ver el progreso en el panel.',
     ],
 
+    'login' => [
+        'throttle' => 'Demasiados intentos de acceso. Intenta de nuevo en :seconds segundos.',
+    ],
+
     'verify_email' => [
         'subject' => 'Verifica tu correo electronico',
         'greeting' => '¡Hola, :name!',

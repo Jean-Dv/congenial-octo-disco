@@ -24,8 +24,7 @@ final class ModuleManifest
         public readonly string $provider,
         public readonly bool $isCore = false,
         public readonly array $dependencies = [],
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array<string, mixed>  $data
@@ -40,6 +39,15 @@ final class ModuleManifest
             }
         }
 
+        $dependencies = $data['dependencies'] ?? [];
+
+        if (
+            ! is_array($dependencies)
+            || array_filter($dependencies, fn (mixed $dependency): bool => ! is_string($dependency) || $dependency === '') !== []
+        ) {
+            throw new InvalidArgumentException('El campo "dependencies" debe ser un array de slugs no vacios.');
+        }
+
         return new self(
             slug: $data['slug'],
             name: $data['name'],
@@ -47,7 +55,7 @@ final class ModuleManifest
             version: $data['version'],
             provider: $data['provider'],
             isCore: (bool) ($data['is_core'] ?? false),
-            dependencies: $data['dependencies'] ?? [],
+            dependencies: array_values(array_unique($dependencies)),
         );
     }
 

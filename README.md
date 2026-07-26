@@ -1,8 +1,8 @@
-# Moon CMS — Core
+# Moon CMS
 
-Núcleo hexagonal para un CMS de servidores privados de World of Warcraft, construido con Laravel 12 + Inertia/Vue. Esta entrega incluye **solo el core**: identidad (registro/login), configuración de reinos multi-core, aprovisionamiento automático de cuentas de juego, comunicación remota con el core (SOAP), un dashboard placeholder y el sistema de módulos sobre el que se construirá todo lo demás.
+CMS modular para servidores privados de World of Warcraft, construido con Laravel 12 + Inertia/Vue. Incluye identidad, configuración multi-realm, aprovisionamiento automático de cuentas de juego, comunicación SOAP, temas y administración de módulos.
 
-No incluye módulos de contenido (News, Changelog, Vote, etc.) — eso es intencional, según el alcance acordado.
+El repositorio contiene actualmente tres módulos: **Core** (obligatorio), **Public** (web pública) y **News** (administración y publicación de noticias).
 
 ## Índice
 
@@ -138,11 +138,11 @@ Modules/{Nombre}/
 
 No hace falta tocar `composer.json` para que autoload funcione: el PSR-4 usa una regla amplia (`"Modules\\": "Modules/"`), así que cualquier clase bajo `Modules/{Nombre}/...` se autocarga por convención.
 
-Solo falta:
-1. Registrar el provider en `bootstrap/providers.php` (o, si prefieres carga 100% dinámica sin tocar ese archivo, replicar cómo `App\Providers\ModuleServiceProvider` ya registra automáticamente cualquier módulo no-core que esté `enabled` en la tabla `modules` — Core está forzado siempre por ser `is_core`).
-2. Ejecutar `php artisan migrate` para sus migraciones.
+No se registra el provider en `bootstrap/providers.php`: `ModuleServiceProvider` descubre los módulos no-core y carga los habilitados automáticamente. Después de agregar o actualizar un módulo, ejecuta `php artisan moon:install`.
 
 Un módulo recién detectado queda **habilitado por defecto** (tal como se pidió). Desde `/admin/modules` se puede activar/desactivar cualquiera que no sea `is_core`. Cualquier módulo puede además proteger sus propias rutas con `->middleware('module:slug')` (middleware `Modules\Core\Http\Middleware\EnsureModuleIsEnabled`, reutilizable) para que, si se deshabilita, sus rutas respondan 404 de verdad y no solo desaparezcan del menú.
+
+Las dependencias declaradas en `module.json` se validan antes de sincronizar. No se aceptan módulos ausentes, referencias a sí mismos ni ciclos. La UI bloquea activar un módulo si sus dependencias están deshabilitadas y bloquea deshabilitar uno que todavía tenga dependientes activos.
 
 ## Sistema de temas
 
@@ -161,47 +161,45 @@ Copy-Item .env.example .env
 En Linux o macOS, usar `cp .env.example .env`. En Linux también se deben ajustar `APP_UID` y `APP_GID` dentro de `.env` con los valores mostrados por `id -u` e `id -g`.
 
 ```bash
-# Prepara la imagen y guarda dependencias en volúmenes Docker.
-docker compose build app
-docker compose run --rm --no-deps workspace composer install
-docker compose run --rm --no-deps workspace pnpm install --frozen-lockfile
-docker compose run --rm --no-deps workspace php artisan key:generate
+# Prepara las imágenes e instala dependencias.
+docker compose -f docker-compose.dev.yml build php-fpm worker workspace
+docker compose -f docker-compose.dev.yml run --rm --no-deps workspace composer install
+docker compose -f docker-compose.dev.yml run --rm --no-deps workspace pnpm install --frozen-lockfile
+docker compose -f docker-compose.dev.yml run --rm --no-deps workspace php artisan key:generate
 
-# Inicia la infraestructura, ejecuta las migraciones y levanta la web.
-docker compose up -d postgres redis mailhog
-docker compose run --rm workspace php artisan migrate
-docker compose run --rm workspace php artisan moon:sync-modules
-docker compose run --rm --no-deps workspace pnpm build
-docker compose up -d
+# Inicia la infraestructura, instala Core y módulos, y levanta la web.
+docker compose -f docker-compose.dev.yml up -d postgres redis mailhog
+docker compose -f docker-compose.dev.yml run --rm workspace php artisan moon:install
+docker compose -f docker-compose.dev.yml run --rm --no-deps workspace pnpm build
+docker compose -f docker-compose.dev.yml up -d
 
-# La cola ya corre como servicio "queue". Para ejecutarla manualmente:
-docker compose run --rm workspace php artisan queue:work redis --queue=provisioning,mail
+# La cola ya corre como servicio "worker". Para ejecutarla manualmente:
+docker compose -f docker-compose.dev.yml run --rm workspace php artisan queue:work redis --queue=provisioning,mail
 
 # Primer administrador (necesario para /admin/realms y /admin/modules):
 # 1. Regístrate normalmente en /register
-# 2. docker compose run --rm workspace php artisan moon:make-admin tucorreo@ejemplo.com
+# 2. docker compose -f docker-compose.dev.yml run --rm workspace php artisan moon:make-admin tucorreo@ejemplo.com
 ```
 
-- App: http://localhost:8080
+- App: http://localhost
 - Mailhog (correos de verificación/reset en local): http://localhost:8025
-- MySQL de prueba con esquema mínimo tipo TrinityCore (opcional, sin depender de un core real): `docker compose --profile mock-realm up -d`
 
-Si ya tienes un TrinityCore/AzerothCore real corriendo, crea el reino desde `/admin/realms` apuntando su BD `auth` y su SOAP directamente (no hace falta el `mock-realm`).
+Si ya tienes un TrinityCore/AzerothCore real corriendo, crea el reino desde `/admin/realms` apuntando su BD `auth` y su SOAP directamente.
 
-La configuración común está en `docker-compose.yml`. Desarrollo añade automáticamente `docker-compose.override.yml`; staging y producción seleccionan sus imágenes inmutables mediante archivos Compose explícitos. La guía detallada está en [`docs/development/docker.md`](docs/development/docker.md).
+La configuración local está en `docker-compose.dev.yml`. La guía detallada está en [`docs/development/docker.md`](docs/development/docker.md).
 
 ## Verificación realizada
 
-El entorno Docker fue construido y ejecutado con PHP 8.3, PostgreSQL, Redis, Nginx y Mailhog. Se verificaron Composer, migraciones, sincronización de módulos, compilación Vite, pruebas PHPUnit y respuestas HTTP de la portada, autenticación y health check.
+La suite automatizada cubre la instalación limpia, migraciones de módulos, dependencias, autenticación, credenciales write-only, páginas públicas y sistema de temas. También se validan la compilación Vite y la sintaxis efectiva de `docker-compose.dev.yml`.
 
-Las imágenes de desarrollo, staging y producción parten del mismo stage PHP. Desarrollo escribe como el UID/GID configurado y aísla `vendor`, `node_modules`, cachés y logs en volúmenes Docker. Las imágenes de entrega incluyen dependencias y assets compilados sin montar el repositorio del host.
+Desarrollo monta el repositorio en `/var/www` y ejecuta los servicios PHP con `APP_UID`/`APP_GID`. Existen Dockerfiles auxiliares para construir imágenes de staging y producción, pero el repositorio no incluye archivos Compose de despliegue para esos entornos.
 
-Continúa pendiente la validación contra un `worldserver` real. El servicio opcional `mock-realm` permite probar la escritura compatible con la base `auth` de TrinityCore/AzerothCore, pero no sustituye una prueba de ingreso desde el cliente WoW.
+Continúa pendiente la validación contra un `worldserver` real.
 
 ## Qué falta / limitaciones conocidas
 
 Fuera de alcance a propósito en esta entrega (según lo acordado):
-- Cualquier módulo de contenido (noticias, changelog, votos, tienda, etc.).
+- Módulos de contenido adicionales a News (changelog, votos, tienda, etc.).
 - Dashboard variando según `gmlevel`.
 - Sistema de roles/permisos granular: hoy solo existe una bandera `is_admin` en `users`, suficiente para proteger `/admin/*`. El primer admin se otorga por Artisan (`moon:make-admin`), no hay UI para auto-promoverse (a propósito).
 - La cobertura automatizada todavía es inicial y debe crecer junto con cada módulo y comportamiento nuevo.

@@ -24,8 +24,8 @@ services:
       dockerfile: ./.docker/common/php-fpm/Dockerfile
       target: development
       args:
-        UID: ${UID:-1000}
-        GID: ${GID:-1000}
+        UID: ${APP_UID:-1000}
+        GID: ${APP_GID:-1000}
         XDEBUG_ENABLED: ${XDEBUG_ENABLED:-true}
         XDEBUG_MODE: develop,coverage,debug,profile
         XDEBUG_HOST: ${XDEBUG_HOST:-host.docker.internal}
@@ -35,7 +35,7 @@ services:
     env_file:
       # Load the environment variables from the Laravel application
       - .env
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${APP_UID:-1000}:${APP_GID:-1000}"
     volumes:
       # Mount the application code for live updates
       - ./:/var/www
@@ -56,8 +56,8 @@ services:
       dockerfile: ./.docker/common/php-fpm/Dockerfile
       target: development
       args:
-        UID: ${UID:-1000}
-        GID: ${GID:-1000}
+        UID: ${APP_UID:-1000}
+        GID: ${APP_GID:-1000}
         XDEBUG_ENABLED: ${XDEBUG_ENABLED:-true}
         XDEBUG_MODE: develop,coverage,debug,profile
         XDEBUG_HOST: ${XDEBUG_HOST:-host.docker.internal}
@@ -66,7 +66,7 @@ services:
         XDEBUG_LOG_LEVEL: 0
     env_file:
       - .env
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${APP_UID:-1000}:${APP_GID:-1000}"
     volumes:
       - ./:/var/www
     networks:
@@ -82,8 +82,8 @@ services:
       context: .
       dockerfile: ./.docker/development/workspace/Dockerfile
       args:
-        UID: ${UID:-1000}
-        GID: ${GID:-1000}
+        UID: ${APP_UID:-1000}
+        GID: ${APP_GID:-1000}
         XDEBUG_ENABLED: ${XDEBUG_ENABLED:-true}
         XDEBUG_MODE: develop,coverage,debug,profile
         XDEBUG_HOST: ${XDEBUG_HOST:-host.docker.internal}

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Core\Http\Controllers\Auth;
 
+use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Core\Application\Auth\AuthenticateUserInput;
@@ -23,9 +25,21 @@ final class AuthenticatedSessionController extends Controller
         return Inertia::render('Core/Auth/Login');
     }
 
-    public function store(LoginRequest $request, AuthenticateUserUseCase $useCase): RedirectResponse
-    {
+    public function store(
+        LoginRequest $request,
+        AuthenticateUserUseCase $useCase,
+        RateLimiter $limiter,
+    ): RedirectResponse {
         $data = $request->validated();
+        $throttleKey = $request->throttleKey();
+
+        if ($limiter->tooManyAttempts($throttleKey, 5)) {
+            throw ValidationException::withMessages([
+                'email' => __('core::auth.login.throttle', [
+                    'seconds' => $limiter->availableIn($throttleKey),
+                ]),
+            ]);
+        }
 
         try {
             $user = $useCase->handle(new AuthenticateUserInput(
@@ -33,8 +47,12 @@ final class AuthenticatedSessionController extends Controller
                 password: $data['password'],
             ));
         } catch (InvalidCredentialsException $exception) {
+            $limiter->hit($throttleKey, 60);
+
             return back()->withErrors(['email' => $exception->getMessage()])->onlyInput('email');
         }
+
+        $limiter->clear($throttleKey);
 
         $model = UserModel::findOrFail($user->id());
 

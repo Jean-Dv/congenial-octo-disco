@@ -39,6 +39,9 @@ final class PublicNewsPageTest extends TestCase
 
         $this->get('/news')->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('Public/News/Index', shouldExist: false)
+            ->where('enabledModules.core', true)
+            ->where('enabledModules.public', true)
+            ->where('enabledModules.news', true)
             ->where('featuredArticle.slug', 'apertura-del-reino')
             ->has('categories', 1));
 

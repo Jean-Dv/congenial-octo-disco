@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Core\Infrastructure\Persistence\Eloquent\Repositories;
 
+use Modules\Core\Infrastructure\Persistence\Eloquent\Models\ModuleModel;
 use Moon\ModuleKit\Contracts\ModuleRepositoryInterface;
 use Moon\ModuleKit\ModuleManifest;
-use Modules\Core\Infrastructure\Persistence\Eloquent\Models\ModuleModel;
 
 final class EloquentModuleRepository implements ModuleRepositoryInterface
 {
-    public function synchronize(ModuleManifest $manifest): void
+    public function synchronize(ModuleManifest $manifest, bool $enabledByDefault = true): void
     {
         $model = ModuleModel::find($manifest->slug);
 
@@ -21,8 +21,8 @@ final class EloquentModuleRepository implements ModuleRepositoryInterface
                 'description' => $manifest->description,
                 'version' => $manifest->version,
                 'is_core' => $manifest->isCore,
-                // Un modulo recien detectado abre habilitado por defecto.
-                'enabled' => true,
+                // Solo abre habilitado si su cadena de dependencias lo permite.
+                'enabled' => $manifest->isCore || $enabledByDefault,
             ]);
 
             return;
@@ -48,6 +48,14 @@ final class EloquentModuleRepository implements ModuleRepositoryInterface
     public function setEnabled(string $slug, bool $enabled): void
     {
         ModuleModel::where('slug', $slug)->update(['enabled' => $enabled]);
+    }
+
+    public function enabledStates(): array
+    {
+        return ModuleModel::query()
+            ->pluck('enabled', 'slug')
+            ->map(fn (mixed $enabled): bool => (bool) $enabled)
+            ->all();
     }
 
     public function all(): array

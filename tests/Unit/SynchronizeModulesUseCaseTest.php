@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use Modules\Core\Application\Module\SynchronizeModulesUseCase;
 use Moon\ModuleKit\Contracts\ModuleRepositoryInterface;
+use Moon\ModuleKit\ModuleDependencyResolver;
 use Moon\ModuleKit\ModuleManager;
 use Moon\ModuleKit\ModuleManifest;
 use PHPUnit\Framework\TestCase;
@@ -30,14 +31,16 @@ final class SynchronizeModulesUseCaseTest extends TestCase
 
         try {
             $repository = $this->createMock(ModuleRepositoryInterface::class);
+            $repository->method('enabledStates')->willReturn([]);
             $repository->expects($this->once())
                 ->method('synchronize')
                 ->with($this->callback(
                     fn (ModuleManifest $manifest): bool => $manifest->slug === 'public',
-                ));
+                ), true);
 
             $useCase = new SynchronizeModulesUseCase(
                 new ModuleManager($directory),
+                new ModuleDependencyResolver,
                 $repository,
             );
 

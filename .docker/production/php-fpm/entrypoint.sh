@@ -20,7 +20,7 @@ rm -rf /var/www/storage-init
 # -----------------------------------------------------------
 # Ensure the database schema is up to date.
 # -----------------------------------------------------------
-gosu www-data php artisan migrate --force
+gosu www-data php artisan moon:install --force
 
 # Clear and cache configurations as www-data
 # -----------------------------------------------------------

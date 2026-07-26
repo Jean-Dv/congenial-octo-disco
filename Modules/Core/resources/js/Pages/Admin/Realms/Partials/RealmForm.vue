@@ -5,6 +5,7 @@ const props = defineProps({
     form: { type: Object, required: true },
     coreTypes: { type: Array, required: true },
     submitLabel: { type: String, default: 'Guardar' },
+    isEditing: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['submit']);
@@ -63,7 +64,7 @@ function toggleCharactersDb() {
                     <ThemeInput v-model="form.auth_database.username" placeholder="trinity" />
                 </ThemeField>
                 <ThemeField label="Contrasena" :error="form.errors['auth_database.password']">
-                    <ThemeInput v-model="form.auth_database.password" type="password" />
+                    <ThemeInput v-model="form.auth_database.password" type="password" :placeholder="isEditing ? 'Dejar vacia para conservarla' : ''" />
                 </ThemeField>
             </div>
         </ThemeCard>
@@ -89,7 +90,7 @@ function toggleCharactersDb() {
                     <ThemeInput v-model="form.characters_database.username" placeholder="trinity" />
                 </ThemeField>
                 <ThemeField label="Contrasena">
-                    <ThemeInput v-model="form.characters_database.password" type="password" />
+                    <ThemeInput v-model="form.characters_database.password" type="password" :placeholder="isEditing ? 'Dejar vacia para conservarla' : ''" />
                 </ThemeField>
             </div>
         </ThemeCard>
@@ -106,7 +107,7 @@ function toggleCharactersDb() {
                     <ThemeInput v-model="form.remote_console.username" />
                 </ThemeField>
                 <ThemeField label="Contrasena" :error="form.errors['remote_console.password']">
-                    <ThemeInput v-model="form.remote_console.password" type="password" />
+                    <ThemeInput v-model="form.remote_console.password" type="password" :placeholder="isEditing ? 'Dejar vacia para conservarla' : ''" />
                 </ThemeField>
             </div>
         </ThemeCard>

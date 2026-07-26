@@ -8,6 +8,7 @@ use Modules\Core\Application\Auth\Ports\EmailVerificationNotifierInterface;
 use Modules\Core\Application\Auth\Ports\PasswordResetNotifierInterface;
 use Modules\Core\Application\GameAccount\Ports\GameAccountJobDispatcherInterface;
 use Modules\Core\Application\Module\ToggleModuleUseCase;
+use Modules\Core\Console\Commands\InstallCommand;
 use Modules\Core\Console\Commands\MakeAdminCommand;
 use Modules\Core\Console\Commands\SynchronizeModulesCommand;
 use Modules\Core\Domain\Auth\Ports\PasswordHasherInterface;
@@ -82,6 +83,7 @@ final class CoreServiceProvider extends AbstractModule
         parent::boot();
 
         $this->commands([
+            InstallCommand::class,
             MakeAdminCommand::class,
             SynchronizeModulesCommand::class,
         ]);

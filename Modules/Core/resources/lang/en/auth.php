@@ -13,6 +13,10 @@ return [
         'success' => 'Account created! We are setting up your character on every realm, you can track progress on the dashboard.',
     ],
 
+    'login' => [
+        'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    ],
+
     'verify_email' => [
         'subject' => 'Verify your email address',
         'greeting' => 'Hello, :name!',

@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
 use Moon\ModuleKit\Contracts\ModuleRepositoryInterface;
+use Moon\ModuleKit\ModuleDependencyResolver;
 use Moon\ModuleKit\ModuleManager;
+use Moon\ModuleKit\ModuleManifest;
 
 class ModuleServiceProvider extends ServiceProvider
 {
@@ -13,34 +16,38 @@ class ModuleServiceProvider extends ServiceProvider
         $this->app->singleton(ModuleManager::class, function () {
             return new ModuleManager(config('modules.path'));
         });
+        $this->app->singleton(ModuleDependencyResolver::class);
 
         $this->app->booted(function (): void {
-            /** @var ModuleManager $manager */
-            $manager = $this->app->make(ModuleManager::class);
-
-            foreach ($manager->nonCore() as $manifest) {
-                if ($this->isEnabled($manifest->slug)) {
+            foreach ($this->enabledModules() as $manifest) {
+                if (! $manifest->isCore) {
                     $this->app->register($manifest->provider);
                 }
             }
+
+            Inertia::share('enabledModules', fn (): array => array_fill_keys(
+                array_keys($this->enabledModules()),
+                true,
+            ));
         });
     }
 
     /**
-     * Consulta si un modulo no-core esta habilitado. Si la tabla `modules`
-     * todavia no existe (instalacion nueva, antes de migrar), el modulo
-     * simplemente no se carga todavia: el Core no depende de esto para
-     * funcionar, asi que es seguro fallar "cerrado" en ese instante.
+     * @return array<string, ModuleManifest>
      */
-    private function isEnabled(string $slug): bool
+    private function enabledModules(): array
     {
         try {
+            /** @var ModuleManager $manager */
+            $manager = $this->app->make(ModuleManager::class);
+            /** @var ModuleDependencyResolver $dependencies */
+            $dependencies = $this->app->make(ModuleDependencyResolver::class);
             /** @var ModuleRepositoryInterface $repository */
             $repository = $this->app->make(ModuleRepositoryInterface::class);
 
-            return $repository->isEnabled($slug);
+            return $dependencies->enabled($manager->discover(), $repository->enabledStates());
         } catch (\Throwable) {
-            return false;
+            return [];
         }
     }
 }

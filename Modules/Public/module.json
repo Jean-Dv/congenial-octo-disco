@@ -5,5 +5,5 @@
     "description": "Modulo publico, se refiere normalmente a la landing page, noticias, etc. Cosas que no son del panel de administración.",
     "is_core": false,
     "provider": "Modules\\Public\\Providers\\PublicServiceProvider",
-    "dependencies": []
+    "dependencies": ["core"]
 }

@@ -7,6 +7,7 @@ namespace Modules\Core\Http\Requests\Admin;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Modules\Core\Domain\Realm\ValueObjects\CoreType;
+use Modules\Core\Infrastructure\Persistence\Eloquent\Models\RealmModel;
 
 final class RealmRequest extends FormRequest
 {
@@ -21,6 +22,10 @@ final class RealmRequest extends FormRequest
     public function rules(): array
     {
         $realmId = $this->route('realm');
+        $creating = $this->isMethod('post');
+        $existingCharactersDatabase = $creating
+            ? false
+            : RealmModel::query()->find($realmId)?->characters_database !== null;
 
         return [
             'name' => ['required', 'string', 'max:100'],
@@ -36,19 +41,26 @@ final class RealmRequest extends FormRequest
             'auth_database.port' => ['required', 'integer', 'min:1', 'max:65535'],
             'auth_database.database' => ['required', 'string', 'max:255'],
             'auth_database.username' => ['required', 'string', 'max:255'],
-            'auth_database.password' => ['required', 'string'],
+            'auth_database.password' => [$creating ? 'required' : 'nullable', 'string'],
 
             'characters_database' => ['nullable', 'array'],
             'characters_database.host' => ['required_with:characters_database', 'string', 'max:255'],
             'characters_database.port' => ['required_with:characters_database', 'integer', 'min:1', 'max:65535'],
             'characters_database.database' => ['required_with:characters_database', 'string', 'max:255'],
             'characters_database.username' => ['required_with:characters_database', 'string', 'max:255'],
-            'characters_database.password' => ['required_with:characters_database', 'string'],
+            'characters_database.password' => [
+                Rule::requiredIf(
+                    $this->input('characters_database') !== null
+                    && ($creating || ! $existingCharactersDatabase)
+                ),
+                'nullable',
+                'string',
+            ],
 
             'remote_console.host' => ['required', 'string', 'max:255'],
             'remote_console.port' => ['required', 'integer', 'min:1', 'max:65535'],
             'remote_console.username' => ['required', 'string', 'max:255'],
-            'remote_console.password' => ['required', 'string'],
+            'remote_console.password' => [$creating ? 'required' : 'nullable', 'string'],
         ];
     }
 }

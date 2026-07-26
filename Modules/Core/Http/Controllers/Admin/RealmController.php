@@ -11,6 +11,7 @@ use Modules\Core\Application\Realm\CreateRealmInput;
 use Modules\Core\Application\Realm\CreateRealmUseCase;
 use Modules\Core\Application\Realm\DeleteRealmUseCase;
 use Modules\Core\Application\Realm\ListRealmsUseCase;
+use Modules\Core\Application\Realm\UpdateRealmInput;
 use Modules\Core\Application\Realm\UpdateRealmUseCase;
 use Modules\Core\Domain\Realm\Ports\RealmRepositoryInterface;
 use Modules\Core\Domain\Realm\Realm;
@@ -50,14 +51,14 @@ final class RealmController extends Controller
         abort_if($entity === null, 404);
 
         return Inertia::render('Core/Admin/Realms/Edit', [
-            'realm' => $this->present($entity, includeSecrets: true),
+            'realm' => $this->present($entity, forEdit: true),
             'coreTypes' => $this->coreTypeOptions(),
         ]);
     }
 
     public function update(RealmRequest $request, int $realm, UpdateRealmUseCase $useCase): RedirectResponse
     {
-        $useCase->handle($realm, $this->toInput($request));
+        $useCase->handle($realm, $this->toUpdateInput($request));
 
         return redirect()->route('admin.realms.index')->with('success', __('core::admin.realms.updated'));
     }
@@ -85,11 +86,46 @@ final class RealmController extends Controller
         );
     }
 
+    private function toUpdateInput(RealmRequest $request): UpdateRealmInput
+    {
+        $data = $request->validated();
+
+        return new UpdateRealmInput(
+            name: $data['name'],
+            slug: $data['slug'],
+            coreType: $data['core_type'],
+            authDatabase: $data['auth_database'],
+            charactersDatabase: $data['characters_database'] ?? null,
+            remoteConsole: $data['remote_console'],
+            gmRealmId: (int) ($data['gm_realm_id'] ?? -1),
+            enabled: (bool) ($data['enabled'] ?? true),
+        );
+    }
+
     /**
      * @return array<string, mixed>
      */
-    private function present(Realm $realm, bool $includeSecrets = false): array
+    private function present(Realm $realm, bool $forEdit = false): array
     {
+        $authDatabase = $forEdit
+            ? [
+                'host' => $realm->authDatabase()->host,
+                'port' => $realm->authDatabase()->port,
+                'database' => $realm->authDatabase()->database,
+                'username' => $realm->authDatabase()->username,
+                'password' => '',
+            ]
+            : ['host' => $realm->authDatabase()->host, 'database' => $realm->authDatabase()->database];
+        $charactersDatabase = $realm->charactersDatabase();
+        $remoteConsole = $forEdit
+            ? [
+                'host' => $realm->remoteConsole()->host,
+                'port' => $realm->remoteConsole()->port,
+                'username' => $realm->remoteConsole()->username,
+                'password' => '',
+            ]
+            : ['host' => $realm->remoteConsole()->host];
+
         return [
             'id' => $realm->id(),
             'name' => $realm->name(),
@@ -99,13 +135,17 @@ final class RealmController extends Controller
             'has_full_support' => $realm->coreType()->hasFullSupport(),
             'enabled' => $realm->isEnabled(),
             'gm_realm_id' => $realm->gmRealmId(),
-            'auth_database' => $includeSecrets
-                ? $realm->authDatabase()->toArray()
-                : ['host' => $realm->authDatabase()->host, 'database' => $realm->authDatabase()->database],
-            'characters_database' => $includeSecrets ? $realm->charactersDatabase()?->toArray() : null,
-            'remote_console' => $includeSecrets
-                ? $realm->remoteConsole()->toArray()
-                : ['host' => $realm->remoteConsole()->host],
+            'auth_database' => $authDatabase,
+            'characters_database' => $forEdit && $charactersDatabase !== null
+                ? [
+                    'host' => $charactersDatabase->host,
+                    'port' => $charactersDatabase->port,
+                    'database' => $charactersDatabase->database,
+                    'username' => $charactersDatabase->username,
+                    'password' => '',
+                ]
+                : null,
+            'remote_console' => $remoteConsole,
         ];
     }
 

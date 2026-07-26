@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\News\Providers;
 
-use Inertia\Inertia;
 use Modules\News\Application\PublicNewsQueryInterface;
 use Modules\News\Domain\Article\Ports\NewsRepositoryInterface;
 use Modules\News\Domain\Category\Ports\NewsCategoryRepositoryInterface;
@@ -28,12 +27,5 @@ final class NewsServiceProvider extends AbstractModule
         $this->app->bind(NewsRepositoryInterface::class, EloquentNewsRepository::class);
         $this->app->bind(NewsCategoryRepositoryInterface::class, EloquentNewsCategoryRepository::class);
         $this->app->bind(PublicNewsQueryInterface::class, EloquentPublicNewsQuery::class);
-    }
-
-    public function boot(): void
-    {
-        parent::boot();
-
-        Inertia::share('enabledModules', fn () => ['news' => true]);
     }
 }
