@@ -13,6 +13,8 @@ const form = useForm({
     core_type: props.realm.core_type,
     gm_realm_id: props.realm.gm_realm_id,
     enabled: props.realm.enabled,
+    connection_type: props.realm.connection_type,
+    ssh_tunnel: props.realm.ssh_tunnel ? { ...props.realm.ssh_tunnel } : null,
     auth_database: { ...props.realm.auth_database },
     characters_database: props.realm.characters_database ? { ...props.realm.characters_database } : null,
     remote_console: { ...props.realm.remote_console },

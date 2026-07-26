@@ -19,8 +19,12 @@ use RuntimeException;
  */
 final class RealmConnectionFactory
 {
-    /** @var array<string, true> */
+    /** @var array<string, string> */
     private array $registered = [];
+
+    public function __construct(
+        private readonly SshTunnelManager $tunnels,
+    ) {}
 
     public function authConnectionFor(Realm $realm): ConnectionInterface
     {
@@ -43,12 +47,24 @@ final class RealmConnectionFactory
     private function connectionFor(Realm $realm, string $kind, DatabaseConnectionConfig $config): ConnectionInterface
     {
         $name = $this->connectionName($realm, $kind);
+        $endpoint = $realm->usesSshTunnel()
+            ? $this->tunnels->endpointFor($realm, $kind)
+            : new TunnelEndpoint($config->host, $config->port);
+        $fingerprint = hash('sha256', serialize([
+            $endpoint->host,
+            $endpoint->port,
+            $config->database,
+            $config->username,
+            $config->password,
+        ]));
 
-        if (! isset($this->registered[$name])) {
+        if (($this->registered[$name] ?? null) !== $fingerprint) {
+            DB::purge($name);
+
             Config::set("database.connections.{$name}", [
                 'driver' => 'mysql',
-                'host' => $config->host,
-                'port' => $config->port,
+                'host' => $endpoint->host,
+                'port' => $endpoint->port,
                 'database' => $config->database,
                 'username' => $config->username,
                 'password' => $config->password,
@@ -61,7 +77,7 @@ final class RealmConnectionFactory
                 'strict' => false,
             ]);
 
-            $this->registered[$name] = true;
+            $this->registered[$name] = $fingerprint;
         }
 
         return DB::connection($name);
@@ -69,6 +85,8 @@ final class RealmConnectionFactory
 
     public function connectionName(Realm $realm, string $kind): string
     {
-        return "realm_{$realm->id()}_{$kind}";
+        $identity = $realm->id() ?? 'new_'.spl_object_id($realm);
+
+        return "realm_{$identity}_{$kind}";
     }
 }

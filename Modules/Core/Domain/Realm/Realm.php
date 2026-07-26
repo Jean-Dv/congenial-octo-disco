@@ -9,6 +9,7 @@ use LogicException;
 use Modules\Core\Domain\Realm\ValueObjects\CoreType;
 use Modules\Core\Domain\Realm\ValueObjects\DatabaseConnectionConfig;
 use Modules\Core\Domain\Realm\ValueObjects\RemoteConsoleConfig;
+use Modules\Core\Domain\Realm\ValueObjects\SshTunnelConfig;
 
 /**
  * Un reino configurado en el CMS. El CMS soporta multiples reinos y
@@ -27,6 +28,7 @@ final class Realm
         private DatabaseConnectionConfig $authDatabase,
         private ?DatabaseConnectionConfig $charactersDatabase,
         private RemoteConsoleConfig $remoteConsole,
+        private ?SshTunnelConfig $sshTunnel,
         private bool $enabled,
         /** RealmID usado en account_access. -1 = acceso GM en todos los reinos del cluster. */
         private int $gmRealmId,
@@ -42,6 +44,7 @@ final class Realm
         DatabaseConnectionConfig $authDatabase,
         ?DatabaseConnectionConfig $charactersDatabase,
         RemoteConsoleConfig $remoteConsole,
+        ?SshTunnelConfig $sshTunnel = null,
         int $gmRealmId = -1,
         bool $enabled = true,
     ): self {
@@ -53,9 +56,10 @@ final class Realm
             authDatabase: $authDatabase,
             charactersDatabase: $charactersDatabase,
             remoteConsole: $remoteConsole,
+            sshTunnel: $sshTunnel,
             enabled: $enabled,
             gmRealmId: $gmRealmId,
-            createdAt: new DateTimeImmutable(),
+            createdAt: new DateTimeImmutable,
         );
     }
 
@@ -67,11 +71,12 @@ final class Realm
         DatabaseConnectionConfig $authDatabase,
         ?DatabaseConnectionConfig $charactersDatabase,
         RemoteConsoleConfig $remoteConsole,
+        ?SshTunnelConfig $sshTunnel,
         bool $enabled,
         int $gmRealmId,
         ?DateTimeImmutable $createdAt,
     ): self {
-        return new self($id, $name, $slug, $coreType, $authDatabase, $charactersDatabase, $remoteConsole, $enabled, $gmRealmId, $createdAt);
+        return new self($id, $name, $slug, $coreType, $authDatabase, $charactersDatabase, $remoteConsole, $sshTunnel, $enabled, $gmRealmId, $createdAt);
     }
 
     public function id(): ?int
@@ -118,6 +123,16 @@ final class Realm
         return $this->remoteConsole;
     }
 
+    public function sshTunnel(): ?SshTunnelConfig
+    {
+        return $this->sshTunnel;
+    }
+
+    public function usesSshTunnel(): bool
+    {
+        return $this->sshTunnel !== null;
+    }
+
     public function gmRealmId(): int
     {
         return $this->gmRealmId;
@@ -156,6 +171,11 @@ final class Realm
     public function updateRemoteConsole(RemoteConsoleConfig $config): void
     {
         $this->remoteConsole = $config;
+    }
+
+    public function updateSshTunnel(?SshTunnelConfig $config): void
+    {
+        $this->sshTunnel = $config;
     }
 
     public function createdAt(): ?DateTimeImmutable

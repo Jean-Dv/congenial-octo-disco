@@ -39,6 +39,7 @@ services:
     volumes:
       # Mount the application code for live updates
       - ./:/var/www
+      - ./.docker/development/ssh/known_hosts:/etc/ssh/ssh_known_hosts:ro
     networks:
       - laravel-development
     healthcheck:
@@ -69,6 +70,7 @@ services:
     user: "${APP_UID:-1000}:${APP_GID:-1000}"
     volumes:
       - ./:/var/www
+      - ./.docker/development/ssh/known_hosts:/etc/ssh/ssh_known_hosts:ro
     networks:
       - laravel-development
     depends_on:

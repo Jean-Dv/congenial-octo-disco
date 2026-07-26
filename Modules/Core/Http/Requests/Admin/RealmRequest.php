@@ -26,6 +26,10 @@ final class RealmRequest extends FormRequest
         $existingCharactersDatabase = $creating
             ? false
             : RealmModel::query()->find($realmId)?->characters_database !== null;
+        $existingSshTunnel = $creating
+            ? false
+            : RealmModel::query()->find($realmId)?->ssh_tunnel !== null;
+        $usingSsh = $this->input('connection_type') === 'ssh';
 
         return [
             'name' => ['required', 'string', 'max:100'],
@@ -36,6 +40,7 @@ final class RealmRequest extends FormRequest
             'core_type' => ['required', Rule::in(array_map(fn (CoreType $c) => $c->value, CoreType::cases()))],
             'gm_realm_id' => ['nullable', 'integer'],
             'enabled' => ['boolean'],
+            'connection_type' => ['required', Rule::in(['direct', 'ssh'])],
 
             'auth_database.host' => ['required', 'string', 'max:255'],
             'auth_database.port' => ['required', 'integer', 'min:1', 'max:65535'],
@@ -61,6 +66,22 @@ final class RealmRequest extends FormRequest
             'remote_console.port' => ['required', 'integer', 'min:1', 'max:65535'],
             'remote_console.username' => ['required', 'string', 'max:255'],
             'remote_console.password' => [$creating ? 'required' : 'nullable', 'string'],
+
+            'ssh_tunnel' => [
+                Rule::requiredIf($usingSsh),
+                'nullable',
+                'array',
+            ],
+            'ssh_tunnel.host' => ['required_if:connection_type,ssh', 'nullable', 'string', 'max:255', 'regex:/^[A-Za-z0-9._:-]+$/'],
+            'ssh_tunnel.port' => ['required_if:connection_type,ssh', 'nullable', 'integer', 'min:1', 'max:65535'],
+            'ssh_tunnel.username' => ['required_if:connection_type,ssh', 'nullable', 'string', 'max:255', 'regex:/^[A-Za-z0-9._-]+$/'],
+            'ssh_tunnel.private_key' => [
+                Rule::requiredIf($usingSsh && ($creating || ! $existingSshTunnel)),
+                'nullable',
+                'string',
+                'max:65535',
+            ],
+            'ssh_tunnel.private_key_passphrase' => ['nullable', 'string', 'max:4096'],
         ];
     }
 }

@@ -10,6 +10,7 @@ use Modules\Core\Domain\Realm\Realm;
 use Modules\Core\Domain\Realm\ValueObjects\CoreType;
 use Modules\Core\Domain\Realm\ValueObjects\DatabaseConnectionConfig;
 use Modules\Core\Domain\Realm\ValueObjects\RemoteConsoleConfig;
+use Modules\Core\Domain\Realm\ValueObjects\SshTunnelConfig;
 use Modules\Core\Infrastructure\Persistence\Eloquent\Models\RealmModel;
 
 final class EloquentRealmRepository implements RealmRepositoryInterface
@@ -46,7 +47,7 @@ final class EloquentRealmRepository implements RealmRepositoryInterface
     {
         $model = $realm->id() !== null
             ? RealmModel::findOrFail($realm->id())
-            : new RealmModel();
+            : new RealmModel;
 
         $model->name = $realm->name();
         $model->slug = $realm->slug();
@@ -54,6 +55,7 @@ final class EloquentRealmRepository implements RealmRepositoryInterface
         $model->auth_database = $realm->authDatabase()->toArray();
         $model->characters_database = $realm->charactersDatabase()?->toArray();
         $model->remote_console = $realm->remoteConsole()->toArray();
+        $model->ssh_tunnel = $realm->sshTunnel()?->toArray();
         $model->gm_realm_id = $realm->gmRealmId();
         $model->enabled = $realm->isEnabled();
 
@@ -85,6 +87,9 @@ final class EloquentRealmRepository implements RealmRepositoryInterface
                 ? DatabaseConnectionConfig::fromArray($model->characters_database)
                 : null,
             remoteConsole: RemoteConsoleConfig::fromArray($model->remote_console),
+            sshTunnel: $model->ssh_tunnel !== null
+                ? SshTunnelConfig::fromArray($model->ssh_tunnel)
+                : null,
             enabled: (bool) $model->enabled,
             gmRealmId: (int) $model->gm_realm_id,
             createdAt: $model->created_at

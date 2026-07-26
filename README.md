@@ -118,7 +118,7 @@ Al registrarse, se crea una cuenta de juego **en todos los reinos habilitados**,
 
 Detalle de seguridad deliberado: **la contraseña en texto plano nunca se pone en cola.** `RegisterUserUseCase` y `ResetPasswordUseCase` calculan el salt/verifier SRP6 de forma síncrona, en el propio request (es una operación de CPU, no de red), y solo esas credenciales *ya derivadas* viajan al Job. Además, `ProvisionGameAccountJob` y `SyncPasswordToRealmJob` implementan `ShouldBeEncrypted`, así que ese payload también va cifrado con `APP_KEY` mientras espera en Redis.
 
-Las credenciales de conexión de cada reino (contraseñas de MySQL y de SOAP) se guardan cifradas en Postgres (`RealmModel` usa el cast `encrypted:array` de Laravel sobre `auth_database`, `characters_database` y `remote_console`).
+Las credenciales de conexión de cada reino (contraseñas de MySQL y de SOAP, además de la llave SSH y su passphrase cuando aplique) se guardan cifradas en Postgres mediante casts `encrypted:array` de Laravel.
 
 ## Sistema de módulos
 
@@ -184,7 +184,9 @@ docker compose -f docker-compose.dev.yml run --rm workspace php artisan queue:wo
 - App: http://localhost
 - Mailhog (correos de verificación/reset en local): http://localhost:8025
 
-Si ya tienes un TrinityCore/AzerothCore real corriendo, crea el reino desde `/admin/realms` apuntando su BD `auth` y su SOAP directamente.
+Si ya tienes un TrinityCore/AzerothCore real corriendo, crea el reino desde `/admin/realms`. Las bases `auth` y `characters` pueden conectarse directamente o mediante una única puerta SSH por reino. En modo SSH, el panel guarda la llave privada y su passphrase cifradas con `APP_KEY`, verifica el túnel y ambas bases antes de guardar, y nunca vuelve a exponer esos secretos.
+
+OpenSSH valida estrictamente la identidad del servidor remoto. En despliegues con túneles, monta un archivo `known_hosts` de solo lectura en los contenedores web y worker y configura su ubicación con `REALM_SSH_KNOWN_HOSTS_FILE`. La llave usada por el CMS debe ser exclusiva y estar limitada en `authorized_keys` a los destinos MySQL necesarios.
 
 La configuración local está en `docker-compose.dev.yml`. La guía detallada está en [`docs/development/docker.md`](docs/development/docker.md).
 

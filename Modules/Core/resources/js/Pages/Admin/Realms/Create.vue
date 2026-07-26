@@ -12,6 +12,8 @@ const form = useForm({
     core_type: 'trinitycore',
     gm_realm_id: -1,
     enabled: true,
+    connection_type: 'direct',
+    ssh_tunnel: null,
     auth_database: { host: '', port: 3306, database: 'auth', username: '', password: '' },
     characters_database: null,
     remote_console: { host: '', port: 7878, username: '', password: '' },

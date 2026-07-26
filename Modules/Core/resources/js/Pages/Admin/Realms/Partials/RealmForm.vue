@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps({
     form: { type: Object, required: true },
@@ -11,6 +11,25 @@ const props = defineProps({
 const emit = defineEmits(['submit']);
 
 const includeCharactersDb = ref(!!(props.form.characters_database && props.form.characters_database.host));
+
+watch(
+    () => props.form.connection_type,
+    (connectionType) => {
+        if (connectionType === 'ssh' && !props.form.ssh_tunnel) {
+            props.form.ssh_tunnel = {
+                host: '',
+                port: 22,
+                username: '',
+                private_key: '',
+                private_key_passphrase: '',
+            };
+        }
+
+        if (connectionType === 'direct') {
+            props.form.ssh_tunnel = null;
+        }
+    },
+);
 
 function toggleCharactersDb() {
     includeCharactersDb.value = !includeCharactersDb.value;
@@ -49,7 +68,64 @@ function toggleCharactersDb() {
             </ThemeCheckbox>
         </ThemeCard>
 
+        <ThemeCard
+            title="Acceso a las bases de datos"
+            subtitle="Usa conexión directa si MySQL es accesible desde el CMS, o un túnel SSH si está en una red privada."
+        >
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <ThemeField label="Modo de conexión" :error="form.errors['connection_type']">
+                    <ThemeSelect v-model="form.connection_type">
+                        <option value="direct">Conexión directa</option>
+                        <option value="ssh">Túnel SSH</option>
+                    </ThemeSelect>
+                </ThemeField>
+            </div>
+
+            <div v-if="form.connection_type === 'ssh' && form.ssh_tunnel" class="mt-5 space-y-5">
+                <p v-if="form.errors['ssh_tunnel']" class="text-sm text-theme-error">
+                    {{ form.errors['ssh_tunnel'] }}
+                </p>
+
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <ThemeField label="Servidor SSH" :error="form.errors['ssh_tunnel.host']">
+                        <ThemeInput v-model="form.ssh_tunnel.host" placeholder="bastion.example.com" />
+                    </ThemeField>
+                    <ThemeField label="Puerto SSH" :error="form.errors['ssh_tunnel.port']">
+                        <ThemeInput v-model="form.ssh_tunnel.port" type="number" placeholder="22" />
+                    </ThemeField>
+                    <ThemeField label="Usuario SSH" :error="form.errors['ssh_tunnel.username']">
+                        <ThemeInput v-model="form.ssh_tunnel.username" placeholder="moon-cms" />
+                    </ThemeField>
+                    <ThemeField label="Passphrase de la llave (opcional)" :error="form.errors['ssh_tunnel.private_key_passphrase']">
+                        <ThemeInput
+                            v-model="form.ssh_tunnel.private_key_passphrase"
+                            type="password"
+                            :placeholder="isEditing ? 'Dejar vacía para conservarla junto con la llave' : ''"
+                        />
+                    </ThemeField>
+                </div>
+
+                <ThemeField label="Llave privada SSH" :error="form.errors['ssh_tunnel.private_key']">
+                    <textarea
+                        v-model="form.ssh_tunnel.private_key"
+                        rows="8"
+                        spellcheck="false"
+                        autocomplete="off"
+                        class="w-full rounded border border-theme-border bg-theme-surface-container-low px-3.5 py-2.5 font-mono-data text-sm text-theme-on-surface outline-none transition placeholder:text-theme-on-surface-disabled focus:border-theme-primary-container focus:ring-2 focus:ring-theme-primary-container/30"
+                        :placeholder="isEditing ? 'Dejar vacía para conservar la llave actual' : '-----BEGIN OPENSSH PRIVATE KEY-----'"
+                    />
+                </ThemeField>
+
+                <p class="text-xs text-theme-on-surface-muted">
+                    La llave y su passphrase se guardan cifradas. Los hosts de auth y characters son los destinos vistos desde este servidor SSH.
+                </p>
+            </div>
+        </ThemeCard>
+
         <ThemeCard title='Base de datos "auth"' subtitle="Se guarda cifrada. Se resuelve en caliente, no toca tu config/database.php.">
+            <p v-if="form.errors['auth_database']" class="mb-4 text-sm text-theme-error">
+                {{ form.errors['auth_database'] }}
+            </p>
             <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <ThemeField label="Host" :error="form.errors['auth_database.host']">
                     <ThemeInput v-model="form.auth_database.host" placeholder="127.0.0.1" />
@@ -75,6 +151,10 @@ function toggleCharactersDb() {
                     {{ includeCharactersDb ? 'Quitar' : 'Anadir' }}
                 </ThemeButton>
             </template>
+
+            <p v-if="form.errors['characters_database']" class="mb-4 text-sm text-theme-error">
+                {{ form.errors['characters_database'] }}
+            </p>
 
             <div v-if="includeCharactersDb" class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <ThemeField label="Host">

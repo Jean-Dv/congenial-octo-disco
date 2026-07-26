@@ -17,6 +17,7 @@ class RealmModel extends Model
         'auth_database',
         'characters_database',
         'remote_console',
+        'ssh_tunnel',
         'gm_realm_id',
         'enabled',
     ];
@@ -27,6 +28,7 @@ class RealmModel extends Model
         'auth_database' => 'encrypted:array',
         'characters_database' => 'encrypted:array',
         'remote_console' => 'encrypted:array',
+        'ssh_tunnel' => 'encrypted:array',
         'enabled' => 'boolean',
         'gm_realm_id' => 'integer',
     ];

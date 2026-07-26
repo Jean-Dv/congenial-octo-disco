@@ -16,12 +16,15 @@ use Modules\Core\Domain\Auth\Ports\UserRepositoryInterface;
 use Modules\Core\Domain\GameAccount\Ports\GameAccountGatewayResolverInterface;
 use Modules\Core\Domain\GameAccount\Ports\GameAccountProvisioningRepositoryInterface;
 use Modules\Core\Domain\GameAccount\Ports\PasswordHashStrategyResolverInterface;
+use Modules\Core\Domain\Realm\Ports\RealmConnectivityVerifierInterface;
 use Modules\Core\Domain\Realm\Ports\RealmRepositoryInterface;
 use Modules\Core\Infrastructure\GameCore\GameAccountGateway\GameAccountGatewayResolver;
 use Modules\Core\Infrastructure\GameCore\PasswordHashStrategy\PasswordHashStrategyResolver;
 use Modules\Core\Infrastructure\Notifications\LaravelEmailVerificationNotifier;
 use Modules\Core\Infrastructure\Notifications\LaravelPasswordResetNotifier;
 use Modules\Core\Infrastructure\Persistence\Connection\RealmConnectionFactory;
+use Modules\Core\Infrastructure\Persistence\Connection\RealmConnectivityVerifier;
+use Modules\Core\Infrastructure\Persistence\Connection\SshTunnelManager;
 use Modules\Core\Infrastructure\Persistence\Eloquent\Repositories\EloquentGameAccountProvisioningRepository;
 use Modules\Core\Infrastructure\Persistence\Eloquent\Repositories\EloquentModuleRepository;
 use Modules\Core\Infrastructure\Persistence\Eloquent\Repositories\EloquentRealmRepository;
@@ -56,7 +59,9 @@ final class CoreServiceProvider extends AbstractModule
 
         // --- Realm -------------------------------------------------------
         $this->app->bind(RealmRepositoryInterface::class, EloquentRealmRepository::class);
+        $this->app->singleton(SshTunnelManager::class);
         $this->app->singleton(RealmConnectionFactory::class);
+        $this->app->bind(RealmConnectivityVerifierInterface::class, RealmConnectivityVerifier::class);
 
         // --- GameAccount ---------------------------------------------------
         $this->app->bind(GameAccountProvisioningRepositoryInterface::class, EloquentGameAccountProvisioningRepository::class);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Http\Controllers\Admin;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Core\Application\Realm\CreateRealmInput;
@@ -13,6 +14,7 @@ use Modules\Core\Application\Realm\DeleteRealmUseCase;
 use Modules\Core\Application\Realm\ListRealmsUseCase;
 use Modules\Core\Application\Realm\UpdateRealmInput;
 use Modules\Core\Application\Realm\UpdateRealmUseCase;
+use Modules\Core\Domain\Realm\Exceptions\RealmConnectivityException;
 use Modules\Core\Domain\Realm\Ports\RealmRepositoryInterface;
 use Modules\Core\Domain\Realm\Realm;
 use Modules\Core\Domain\Realm\ValueObjects\CoreType;
@@ -39,7 +41,13 @@ final class RealmController extends Controller
 
     public function store(RealmRequest $request, CreateRealmUseCase $useCase): RedirectResponse
     {
-        $useCase->handle($this->toInput($request));
+        try {
+            $useCase->handle($this->toInput($request));
+        } catch (RealmConnectivityException $exception) {
+            throw ValidationException::withMessages([
+                $exception->field => $exception->getMessage(),
+            ]);
+        }
 
         return redirect()->route('admin.realms.index')->with('success', __('core::admin.realms.created'));
     }
@@ -58,7 +66,13 @@ final class RealmController extends Controller
 
     public function update(RealmRequest $request, int $realm, UpdateRealmUseCase $useCase): RedirectResponse
     {
-        $useCase->handle($realm, $this->toUpdateInput($request));
+        try {
+            $useCase->handle($realm, $this->toUpdateInput($request));
+        } catch (RealmConnectivityException $exception) {
+            throw ValidationException::withMessages([
+                $exception->field => $exception->getMessage(),
+            ]);
+        }
 
         return redirect()->route('admin.realms.index')->with('success', __('core::admin.realms.updated'));
     }
@@ -81,6 +95,9 @@ final class RealmController extends Controller
             authDatabase: $data['auth_database'],
             charactersDatabase: $data['characters_database'] ?? null,
             remoteConsole: $data['remote_console'],
+            sshTunnel: $data['connection_type'] === 'ssh'
+                ? $data['ssh_tunnel']
+                : null,
             gmRealmId: (int) ($data['gm_realm_id'] ?? -1),
             enabled: (bool) ($data['enabled'] ?? true),
         );
@@ -97,6 +114,9 @@ final class RealmController extends Controller
             authDatabase: $data['auth_database'],
             charactersDatabase: $data['characters_database'] ?? null,
             remoteConsole: $data['remote_console'],
+            sshTunnel: $data['connection_type'] === 'ssh'
+                ? $data['ssh_tunnel']
+                : null,
             gmRealmId: (int) ($data['gm_realm_id'] ?? -1),
             enabled: (bool) ($data['enabled'] ?? true),
         );
@@ -146,6 +166,16 @@ final class RealmController extends Controller
                 ]
                 : null,
             'remote_console' => $remoteConsole,
+            'connection_type' => $realm->usesSshTunnel() ? 'ssh' : 'direct',
+            'ssh_tunnel' => $forEdit && $realm->sshTunnel() !== null
+                ? [
+                    'host' => $realm->sshTunnel()->host,
+                    'port' => $realm->sshTunnel()->port,
+                    'username' => $realm->sshTunnel()->username,
+                    'private_key' => '',
+                    'private_key_passphrase' => '',
+                ]
+                : null,
         ];
     }
 
