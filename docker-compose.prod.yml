@@ -1,0 +1,172 @@
+x-app-environment: &app-environment
+  APP_NAME: ${APP_NAME:-Moon}
+  APP_ENV: production
+  APP_KEY: ${APP_KEY:?Set APP_KEY in Coolify}
+  APP_DEBUG: "false"
+  APP_URL: ${APP_URL:?Set the public HTTPS URL in Coolify}
+  APP_LOCALE: ${APP_LOCALE:-es}
+  APP_FALLBACK_LOCALE: ${APP_FALLBACK_LOCALE:-en}
+  APP_FALLBACK_LOCALE_LIST: ${APP_FALLBACK_LOCALE_LIST:-es,en}
+  APP_THEME: ${APP_THEME:-aeris}
+
+  DB_CONNECTION: pgsql
+  DB_HOST: postgres-cms
+  DB_PORT: "5432"
+  DB_DATABASE: ${DB_DATABASE:-moon_cms}
+  DB_USERNAME: ${DB_USERNAME:-moon}
+  DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in Coolify}
+
+  CACHE_STORE: redis
+  SESSION_DRIVER: redis
+  SESSION_LIFETIME: ${SESSION_LIFETIME:-120}
+  SESSION_SECURE_COOKIE: "true"
+  QUEUE_CONNECTION: redis
+  REDIS_HOST: redis-cms
+  REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in Coolify}
+  REDIS_PORT: "6379"
+
+  MAIL_MAILER: ${MAIL_MAILER:-smtp}
+  MAIL_SCHEME: ${MAIL_SCHEME:-}
+  MAIL_HOST: ${MAIL_HOST:?Set MAIL_HOST in Coolify}
+  MAIL_PORT: ${MAIL_PORT:-587}
+  MAIL_USERNAME: ${MAIL_USERNAME:-}
+  MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+  MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:?Set MAIL_FROM_ADDRESS in Coolify}
+  MAIL_FROM_NAME: ${MAIL_FROM_NAME:-Moon}
+
+  GAME_ACCOUNT_PROVISIONING_MAX_ATTEMPTS: ${GAME_ACCOUNT_PROVISIONING_MAX_ATTEMPTS:-5}
+  GAME_ACCOUNT_PROVISIONING_BACKOFF_SECONDS: ${GAME_ACCOUNT_PROVISIONING_BACKOFF_SECONDS:-5,15,30,60,120}
+
+  REALM_SSH_BINARY: /usr/bin/ssh
+  REALM_SSH_KNOWN_HOSTS_FILE: /etc/ssh/ssh_known_hosts
+  REALM_SSH_TEMPORARY_DIRECTORY: /tmp
+  REALM_SSH_CONNECT_TIMEOUT: ${REALM_SSH_CONNECT_TIMEOUT:-8}
+  REALM_SSH_STARTUP_TIMEOUT: ${REALM_SSH_STARTUP_TIMEOUT:-10}
+
+services:
+  web-cms:
+    build:
+      context: .
+      dockerfile: ./.docker/production/nginx/Dockerfile
+    restart: unless-stopped
+    expose:
+      - "80"
+    volumes:
+      - laravel-storage-prod:/var/www/storage:ro
+    depends_on:
+      php-fpm-cms:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://127.0.0.1/up || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  php-fpm-cms:
+    build:
+      context: .
+      dockerfile: ./.docker/common/php-fpm/Dockerfile
+      target: production
+    restart: unless-stopped
+    environment: *app-environment
+    expose:
+      - "9000"
+    volumes:
+      - laravel-storage-prod:/var/www/storage
+    configs:
+      - source: realm-ssh-known-hosts
+        target: /etc/ssh/ssh_known_hosts
+        mode: 0444
+    depends_on:
+      postgres-cms:
+        condition: service_healthy
+      redis-cms:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "php-fpm-healthcheck || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    stop_grace_period: 30s
+
+  worker-cms:
+    build:
+      context: .
+      dockerfile: ./.docker/common/php-fpm/Dockerfile
+      target: production
+    restart: unless-stopped
+    entrypoint: ["/usr/local/bin/worker-entrypoint.sh"]
+    command:
+      - php
+      - artisan
+      - queue:work
+      - redis
+      - --queue=provisioning,mail
+      - --sleep=3
+      - --tries=5
+      - --timeout=300
+    environment: *app-environment
+    volumes:
+      - laravel-storage-prod:/var/www/storage
+    configs:
+      - source: realm-ssh-known-hosts
+        target: /etc/ssh/ssh_known_hosts
+        mode: 0444
+    depends_on:
+      php-fpm-cms:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f '[a]rtisan queue:work' >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    stop_grace_period: 330s
+
+  postgres-cms:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-moon_cms}
+      POSTGRES_USER: ${DB_USERNAME:-moon}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in Coolify}
+    volumes:
+      - postgres-data-prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis-cms:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --requirepass
+      - ${REDIS_PASSWORD:?Set REDIS_PASSWORD in Coolify}
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in Coolify}
+    volumes:
+      - redis-data-prod:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli --no-auth-warning -a \"$${REDIS_PASSWORD}\" ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+configs:
+  realm-ssh-known-hosts:
+    content: |
+      ${REALM_SSH_KNOWN_HOSTS:?Set the multiline known_hosts content in Coolify}
+
+volumes:
+  laravel-storage-prod:
+  postgres-data-prod:
+  redis-data-prod:

@@ -1,18 +1,17 @@
-# Stage 1: Build assets
-FROM debian AS builder
+# Stage 1: Build versioned frontend assets
+FROM node:22-alpine AS builder
 
-# Install Node.js and build tools
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    nodejs \
-    npm \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# Set working directory
 WORKDIR /var/www
 
-# Copy Laravel application code
+COPY package.json pnpm-lock.yaml ./
+
+RUN corepack enable \
+    && corepack prepare pnpm@9.15.9 --activate \
+    && pnpm install --frozen-lockfile
+
 COPY . /var/www
+
+RUN pnpm build
 
 # Stage 2: Nginx production image
 FROM nginx:alpine
@@ -24,16 +23,12 @@ FROM nginx:alpine
 # -----------------------------------------------------------
 COPY ./.docker/production/nginx/nginx.conf /etc/nginx/nginx.conf
 
-# Copy Laravel's public assets from the builder stage
-# -----------------------------------------------------------
-# We only need the 'public' directory from our Laravel app.
-# -----------------------------------------------------------
+# Copy Laravel's public files, including the Vite build generated above.
 COPY --from=builder /var/www/public /var/www/public
 
 # Set the working directory to the public folder
 WORKDIR /var/www/public
 
-# Expose port 80 and 443 and start Nginx
+# TLS is terminated by Coolify's reverse proxy.
 EXPOSE 80
-EXPOSE 443
 CMD ["nginx", "-g", "daemon off;"]
