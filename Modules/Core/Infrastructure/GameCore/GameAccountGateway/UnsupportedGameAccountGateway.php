@@ -7,6 +7,7 @@ namespace Modules\Core\Infrastructure\GameCore\GameAccountGateway;
 use Modules\Core\Domain\GameAccount\Exceptions\PasswordHashStrategyNotImplementedException;
 use Modules\Core\Domain\GameAccount\Ports\GameAccountGatewayInterface;
 use Modules\Core\Domain\GameAccount\ValueObjects\CoreCredentialPayload;
+use Modules\Core\Domain\GameAccount\ValueObjects\GameAccountIdentity;
 use Modules\Core\Domain\Realm\Realm;
 use Modules\Core\Domain\Realm\ValueObjects\CoreType;
 
@@ -18,10 +19,14 @@ final class UnsupportedGameAccountGateway implements GameAccountGatewayInterface
 {
     public function __construct(
         private readonly CoreType $coreType,
-    ) {
-    }
+    ) {}
 
     public function accountExists(Realm $realm, string $username): bool
+    {
+        throw PasswordHashStrategyNotImplementedException::forCore($this->coreType);
+    }
+
+    public function findAccountByEmail(Realm $realm, string $email): ?GameAccountIdentity
     {
         throw PasswordHashStrategyNotImplementedException::forCore($this->coreType);
     }

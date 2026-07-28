@@ -13,6 +13,7 @@ class GameAccountProvisioningModel extends Model
     protected $fillable = [
         'user_id',
         'realm_id',
+        'game_username',
         'status',
         'attempts',
         'last_error',

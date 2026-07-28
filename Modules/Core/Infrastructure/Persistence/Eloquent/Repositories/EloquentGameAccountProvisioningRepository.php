@@ -39,10 +39,11 @@ final class EloquentGameAccountProvisioningRepository implements GameAccountProv
     {
         $model = $provisioning->id() !== null
             ? GameAccountProvisioningModel::findOrFail($provisioning->id())
-            : new GameAccountProvisioningModel();
+            : new GameAccountProvisioningModel;
 
         $model->user_id = $provisioning->userId();
         $model->realm_id = $provisioning->realmId();
+        $model->game_username = $provisioning->gameUsername();
         $model->status = $provisioning->status()->value;
         $model->attempts = $provisioning->attempts();
         $model->last_error = $provisioning->lastError();
@@ -60,6 +61,7 @@ final class EloquentGameAccountProvisioningRepository implements GameAccountProv
             id: $model->id,
             userId: $model->user_id,
             realmId: $model->realm_id,
+            gameUsername: $model->game_username,
             status: ProvisioningStatus::from($model->status),
             attempts: $model->attempts,
             lastError: $model->last_error,

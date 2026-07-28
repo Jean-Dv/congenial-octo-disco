@@ -32,11 +32,16 @@ final class EloquentUserRepository implements UserRepositoryInterface
         return UserModel::where('email', $email->value())->exists();
     }
 
+    public function existsByName(string $name): bool
+    {
+        return UserModel::where('name', $name)->exists();
+    }
+
     public function save(User $user): User
     {
         $model = $user->id() !== null
             ? UserModel::findOrFail($user->id())
-            : new UserModel();
+            : new UserModel;
 
         $model->name = $user->name();
         $model->email = $user->email()->value();

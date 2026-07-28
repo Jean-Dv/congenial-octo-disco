@@ -15,6 +15,8 @@ interface UserRepositoryInterface
 
     public function existsByEmail(Email $email): bool;
 
+    public function existsByName(string $name): bool;
+
     /**
      * Persiste el usuario (crea o actualiza) y devuelve la instancia con
      * su identidad ya asignada.

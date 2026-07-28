@@ -10,9 +10,10 @@ use Modules\Core\Domain\GameAccount\ValueObjects\ProvisioningStatus;
 
 /**
  * Estado de "crear/mantener sincronizada la cuenta de juego de este
- * usuario en este reino". Existe una fila por cada (user, realm). El
- * registro crea una por cada reino habilitado; un reset de password
- * reabre las que ya estaban READY para volver a sincronizar.
+ * usuario en este reino". Existe una fila por cada (user, realm) y
+ * conserva el username real del juego; esto permite vincular cuentas
+ * creadas fuera del CMS. El registro crea una por cada reino habilitado;
+ * un reset de password reabre las READY para volver a sincronizar.
  */
 final class GameAccountProvisioning
 {
@@ -22,6 +23,7 @@ final class GameAccountProvisioning
         ?int $id,
         private readonly int $userId,
         private readonly int $realmId,
+        private readonly ?string $gameUsername,
         private ProvisioningStatus $status,
         private int $attempts,
         private ?string $lastError,
@@ -31,16 +33,17 @@ final class GameAccountProvisioning
         $this->id = $id;
     }
 
-    public static function requestFor(int $userId, int $realmId): self
+    public static function requestFor(int $userId, int $realmId, string $gameUsername): self
     {
         return new self(
             id: null,
             userId: $userId,
             realmId: $realmId,
+            gameUsername: $gameUsername,
             status: ProvisioningStatus::PENDING,
             attempts: 0,
             lastError: null,
-            createdAt: new DateTimeImmutable(),
+            createdAt: new DateTimeImmutable,
             updatedAt: null,
         );
     }
@@ -49,13 +52,14 @@ final class GameAccountProvisioning
         int $id,
         int $userId,
         int $realmId,
+        ?string $gameUsername,
         ProvisioningStatus $status,
         int $attempts,
         ?string $lastError,
         DateTimeImmutable $createdAt,
         ?DateTimeImmutable $updatedAt,
     ): self {
-        return new self($id, $userId, $realmId, $status, $attempts, $lastError, $createdAt, $updatedAt);
+        return new self($id, $userId, $realmId, $gameUsername, $status, $attempts, $lastError, $createdAt, $updatedAt);
     }
 
     public function id(): ?int
@@ -80,6 +84,11 @@ final class GameAccountProvisioning
     public function realmId(): int
     {
         return $this->realmId;
+    }
+
+    public function gameUsername(): ?string
+    {
+        return $this->gameUsername;
     }
 
     public function status(): ProvisioningStatus
@@ -152,6 +161,6 @@ final class GameAccountProvisioning
 
     private function touch(): void
     {
-        $this->updatedAt = new DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable;
     }
 }

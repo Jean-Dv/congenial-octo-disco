@@ -31,8 +31,7 @@ final class ResetPasswordUseCase
         private readonly GameAccountProvisioningRepositoryInterface $provisionings,
         private readonly PasswordHashStrategyResolverInterface $strategies,
         private readonly GameAccountJobDispatcherInterface $jobs,
-    ) {
-    }
+    ) {}
 
     public function handle(int $userId, string $newPlainPassword): User
     {
@@ -46,19 +45,24 @@ final class ResetPasswordUseCase
         $user = $this->users->save($user);
 
         foreach ($this->realms->allEnabled() as $realm) {
+            $provisioning = $this->provisionings->findByUserAndRealm($userId, $realm->id());
+            $gameUsername = $provisioning?->gameUsername() ?? $user->name();
+
             try {
                 $strategy = $this->strategies->resolve($realm->coreType());
-                $credentials = $strategy->generateCredentials($user->name(), $newPlainPassword);
+                $credentials = $strategy->generateCredentials($gameUsername, $newPlainPassword);
             } catch (PasswordHashStrategyNotImplementedException) {
                 // Este core no tiene estrategia implementada todavia: no
                 // hay forma de sincronizar la contraseña ahi, se omite.
                 continue;
             }
 
-            $provisioning = $this->provisionings->findByUserAndRealm($userId, $realm->id());
-
             if ($provisioning === null) {
-                $provisioning = GameAccountProvisioning::requestFor($userId, $realm->id());
+                $provisioning = GameAccountProvisioning::requestFor(
+                    $userId,
+                    $realm->id(),
+                    $gameUsername,
+                );
             }
 
             $provisioning->requeue();
@@ -66,7 +70,7 @@ final class ResetPasswordUseCase
 
             $this->jobs->dispatchPasswordSync(
                 provisioningId: $provisioning->id(),
-                gameUsername: $user->name(),
+                gameUsername: $gameUsername,
                 credentialColumns: $credentials->columns(),
             );
         }

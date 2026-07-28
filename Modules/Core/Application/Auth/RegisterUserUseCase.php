@@ -34,8 +34,7 @@ final class RegisterUserUseCase
         private readonly PasswordHashStrategyResolverInterface $strategies,
         private readonly GameAccountJobDispatcherInterface $jobs,
         private readonly EmailVerificationNotifierInterface $verificationNotifier,
-    ) {
-    }
+    ) {}
 
     public function handle(RegisterUserInput $input): User
     {
@@ -55,7 +54,11 @@ final class RegisterUserUseCase
         $user = $this->users->save($user);
 
         foreach ($this->realms->allEnabled() as $realm) {
-            $provisioning = GameAccountProvisioning::requestFor($user->id(), $realm->id());
+            $provisioning = GameAccountProvisioning::requestFor(
+                $user->id(),
+                $realm->id(),
+                $input->username,
+            );
 
             try {
                 $strategy = $this->strategies->resolve($realm->coreType());

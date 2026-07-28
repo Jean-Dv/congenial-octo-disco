@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Date;
 use Modules\Core\Domain\GameAccount\Exceptions\GameAccountGatewayException;
 use Modules\Core\Domain\GameAccount\Ports\GameAccountGatewayInterface;
 use Modules\Core\Domain\GameAccount\ValueObjects\CoreCredentialPayload;
+use Modules\Core\Domain\GameAccount\ValueObjects\GameAccountIdentity;
 use Modules\Core\Domain\Realm\Realm;
 use Modules\Core\Infrastructure\Persistence\Connection\RealmConnectionFactory;
 
@@ -22,8 +23,7 @@ final class TrinityLikeGameAccountGateway implements GameAccountGatewayInterface
 {
     public function __construct(
         private readonly RealmConnectionFactory $connections,
-    ) {
-    }
+    ) {}
 
     public function accountExists(Realm $realm, string $username): bool
     {
@@ -31,6 +31,27 @@ final class TrinityLikeGameAccountGateway implements GameAccountGatewayInterface
             ->table('account')
             ->where('username', $this->normalize($username))
             ->exists();
+    }
+
+    public function findAccountByEmail(Realm $realm, string $email): ?GameAccountIdentity
+    {
+        $normalizedEmail = mb_strtolower(trim($email));
+
+        $account = $this->connections->authConnectionFor($realm)
+            ->table('account')
+            ->select(['username', 'email'])
+            ->whereRaw('LOWER(email) = ?', [$normalizedEmail])
+            ->orderBy('id')
+            ->first();
+
+        if ($account === null) {
+            return null;
+        }
+
+        return new GameAccountIdentity(
+            username: (string) $account->username,
+            email: (string) $account->email,
+        );
     }
 
     public function createAccount(Realm $realm, string $username, string $email, CoreCredentialPayload $credentials): int

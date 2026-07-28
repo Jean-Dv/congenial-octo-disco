@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Domain\GameAccount\Ports;
 
 use Modules\Core\Domain\GameAccount\ValueObjects\CoreCredentialPayload;
+use Modules\Core\Domain\GameAccount\ValueObjects\GameAccountIdentity;
 use Modules\Core\Domain\Realm\Realm;
 
 /**
@@ -16,6 +17,8 @@ use Modules\Core\Domain\Realm\Realm;
 interface GameAccountGatewayInterface
 {
     public function accountExists(Realm $realm, string $username): bool;
+
+    public function findAccountByEmail(Realm $realm, string $email): ?GameAccountIdentity;
 
     /**
      * @return int El id de la cuenta creada en la tabla `account` del reino.
