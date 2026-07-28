@@ -1,9 +1,24 @@
+# Build the same versioned frontend assets that Nginx serves. Laravel's
+# @vite directive also reads public/build/manifest.json from the PHP image.
+FROM node:22-alpine AS frontend-builder
+
+WORKDIR /var/www
+
+COPY package.json pnpm-lock.yaml ./
+
+RUN corepack enable \
+    && corepack prepare pnpm@9.15.9 --activate \
+    && pnpm install --frozen-lockfile
+
+COPY . /var/www
+
+RUN pnpm build
+
 # Stage 1: Build environment and Composer dependencies
 FROM php:8.4-fpm AS builder
 
 # Install system dependencies and PHP extensions required for Laravel + MySQL/PostgreSQL support
 # Some dependencies are required for PHP extensions only in the build stage
-# We don't need to install Node.js or build assets, as it was done in the Nginx image
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     unzip \
@@ -157,6 +172,9 @@ RUN echo '[www]' > /usr/local/etc/php-fpm.d/zz-healthcheck.conf && \
 
 # Copy the application code and dependencies from the build stage
 COPY --from=builder /var/www /var/www
+
+# Keep Laravel's Vite manifest in sync with the files baked into Nginx.
+COPY --from=frontend-builder /var/www/public/build /var/www/public/build
 
 # Set working directory
 WORKDIR /var/www
