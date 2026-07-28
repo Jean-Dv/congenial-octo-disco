@@ -41,6 +41,9 @@ importers:
       vue:
         specifier: ^3.5
         version: 3.5.39
+      ziggy-js:
+        specifier: 2.6.3
+        version: 2.6.3
 
 packages:
 
@@ -837,6 +840,10 @@ packages:
     resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
     engines: {node: '>=10'}
 
+  qs-esm@7.0.3:
+    resolution: {integrity: sha512-8jbjCR0PPbqoQcv83C2K/zvVeytRPwPpt3WPDbq51qyLAxcWGtXVRjSe6GHtLCoVbg9+NEFkv7GyUxqjcDIJzw==}
+    engines: {node: '>=18'}
+
   qs@6.15.3:
     resolution: {integrity: sha512-O9gl3zCl5h5blw1KGUzQKhA5oUXSl8rwUIM5o0S3nCXMliSvy5Dzx7/DJcI+SwgICv+IneSZwhBh1oSyEHA71A==}
     engines: {node: '>=0.6'}
@@ -933,6 +940,9 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  ziggy-js@2.6.3:
+    resolution: {integrity: sha512-YcuXM0BohyWUsQcibMmlGMrfF01BQogRjrfg/AWQhG3rB/Swt76/SJxH5AH8X8Xn5aDWxGpYKdXV7Fo5g+BVLQ==}
 
 snapshots:
 
@@ -1571,6 +1581,8 @@ snapshots:
 
   proxy-from-env@2.1.0: {}
 
+  qs-esm@7.0.3: {}
+
   qs@6.15.3:
     dependencies:
       es-define-property: 1.0.1
@@ -1677,3 +1689,7 @@ snapshots:
       '@vue/runtime-dom': 3.5.39
       '@vue/server-renderer': 3.5.39(vue@3.5.39)
       '@vue/shared': 3.5.39
+
+  ziggy-js@2.6.3:
+    dependencies:
+      qs-esm: 7.0.3
