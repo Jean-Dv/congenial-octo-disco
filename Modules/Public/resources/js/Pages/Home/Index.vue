@@ -2,6 +2,13 @@
 import { Link } from '@inertiajs/vue3';
 import homeHeroImage from '../../../images/hero-1.webp';
 
+function safeRoute(name) {
+    try {
+        return route(name);
+    } catch {
+        return '#';
+    }
+}
 const props = defineProps({
     serverStats: {
         type: Object,
@@ -96,7 +103,7 @@ function categoryStyle(type) {
                             class="inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest"
                             style="background: rgba(230,33,23,0.1); border: 1px solid rgba(230,33,23,0.2); color: var(--color-theme-public-primary)"
                         >
-                            TEMPORADA 1: AETHER ASCENDANT
+                            TEMPORADA 1: ASCENSO DE ELUNE
                         </span>
 
                         <h1
@@ -114,21 +121,23 @@ function categoryStyle(type) {
 
                     <!-- CTAs -->
                     <div class="flex flex-wrap gap-4">
-                        <button
+                        <Link
+                            :href="safeRoute('register')"
                             class="flex items-center gap-2 px-8 py-4 rounded-lg font-bold text-base hover:brightness-110 active:scale-95 transition-all"
                             style="background-color: var(--color-theme-public-primary-container); color: var(--color-theme-public-on-primary-container); box-shadow: 0 8px 30px rgba(230,33,23,0.2)"
                         >
                             <span class="material-symbols-outlined">play_arrow</span>
                             Jugar Ahora
-                        </button>
+                        </Link>
 
-                        <button
+                        <Link
+                            :href="safeRoute('public.downloads.client_complete')"
                             class="flex items-center gap-2 px-8 py-4 rounded-lg font-bold text-base hover:bg-white/5 active:scale-95 transition-all text-white"
                             style="border: 1px solid var(--color-theme-public-outline-variant)"
                         >
                             <span class="material-symbols-outlined">download</span>
-                            Descargar Launcher
-                        </button>
+                            Descargar el cliente
+                        </Link>
                     </div>
 
                     <!-- Hero stats grid -->
