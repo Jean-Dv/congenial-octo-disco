@@ -34,9 +34,9 @@ function safeRoute(name) {
 }
 
 const navLinks = computed(() => [
-    { label: 'Home', routeName: 'public.home', visible: true },
-    { label: 'News', routeName: 'public.news', visible: !!page.props.enabledModules?.news },
-    { label: 'Downloads', routeName: 'public.downloads', visible: true },
+    { label: 'Inicio', routeName: 'public.home', visible: true },
+    { label: 'Noticias', routeName: 'public.news', visible: !!page.props.enabledModules?.news },
+    { label: 'Descargas', routeName: 'public.downloads', visible: true },
     { label: 'Discord', routeName: 'public.discord', visible: true },
 ].filter((link) => link.visible));
 

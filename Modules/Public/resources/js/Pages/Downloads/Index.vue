@@ -2,61 +2,65 @@
 import { Head } from '@inertiajs/vue3';
 import downloadsHeroImage from '../../../images/hero-3.webp';
 
+function safeRoute(name) {
+    try {
+        return route(name);
+    } catch {
+        return '#';
+    }
+}
+
 const downloads = [
     {
-        title: 'Full Game Client',
-        description: 'Complete game installation including all cinematic assets and core expansion files.',
-        version: '10.2.7.5',
-        size: '84.2 GB',
+        title: 'Cliente Completo',
+        description: 'Instalación completa del juego, incluidos todos los elementos cinematográficos y los archivos principales de la expansión.',
+        version: '4.3.4 Build 15596',
+        size: '21 GB',
         icon: 'download_for_offline',
+        link: 'public.downloads.client_complete'
     },
     {
-        title: 'Custom Launcher',
-        description: 'Our proprietary tool for automatic updates, real-time news, and account management.',
-        version: '2.1.0',
-        size: '124 MB',
+        title: 'Launcher Personalizado',
+        description: 'Herramienta propia para actualizaciones automáticas, noticias en tiempo real y gestión de cuentas.',
+        version: '1.0.0',
+        size: '130 MB',
         icon: 'rocket_launch',
+        link: 'public.downloads.launcher'
     },
     {
-        title: 'HD Texture Patch',
-        description: 'Enhance your visual experience with upgraded world and character model textures.',
-        version: '4.0.1',
-        size: '12.8 GB',
-        icon: 'texture',
-    },
-    {
-        title: 'Essential Addons',
-        description: 'A curated pack of performance-tuned UI addons specifically for the Aetheris realm.',
-        version: '1.5.0',
-        size: '450 MB',
+        title: 'Conjunto de Mods Esenciales',
+        description: 'Un conjunto curado de modificaciones de interfaz de usuario optimizadas para el reino de Elune.',
+        version: '1.0.0',
+        size: '15.2 MB',
         icon: 'extension',
+        link: 'public.downloads.addons'
     },
 ];
 
 const setupSteps = [
     {
         number: '01',
-        title: 'Create Account',
-        description: 'Register your game account on our web portal. This account will be used for both the game and the forums.',
+        title: 'Crear Cuenta',
+        description: 'Registra tu cuenta de juego en nuestro portal web. Esta cuenta se utilizará tanto para el juego como para los foros.',
     },
     {
         number: '02',
-        title: 'Install Client',
-        description: 'Download and install the game client. We recommend using our Custom Launcher for automated updates.',
+        title: 'Instalar Cliente',
+        description: 'Descarga e instala el cliente del juego. Recomendamos usar nuestro Launcher Personalizado para actualizaciones automáticas.',
     },
     {
         number: '03',
-        title: 'Enter Aetheris',
-        description: "Launch the game, enter your credentials, and select the 'Aetheris Main' realm to begin your adventure.",
+        title: 'Entrar a Elune',
+        description: 'Inicia el juego, introduce tus credenciales y selecciona el reino "Elune" para comenzar tu aventura.',
     },
 ];
 
 const requirements = [
-    { label: 'OS', value: 'Windows® 10 / 11 64-bit' },
-    { label: 'Processor', value: 'Intel® Core™ i7-6700 / AMD Ryzen™ 5 2600' },
-    { label: 'Memory', value: '16 GB RAM' },
-    { label: 'Graphics', value: 'NVIDIA® GeForce® GTX 1080 / AMD Radeon™ RX 5700 XT' },
-    { label: 'DirectX', value: 'Version 12' },
+    { label: 'OS', value: 'Windows® XP / Vista / 7' },
+    { label: 'Processor', value: 'Intel® Pentium® D / AMD Athlon™ 64 X2' },
+    { label: 'Memory', value: '2 GB RAM (4 GB para Vista/7)' },
+    { label: 'Graphics', value: 'NVIDIA® GeForce® 6800 / ATI Radeon™ X1600 Pro o superior' },
+    { label: 'DirectX', value: 'Version 9.0c' },
 ];
 </script>
 
@@ -76,14 +80,14 @@ const requirements = [
                 <div class="relative z-10 mx-auto w-full max-w-360 px-4 pb-24 sm:px-8 lg:px-12">
                     <div class="max-w-3xl">
                         <p class="mb-4 font-mono-data text-[11px] uppercase tracking-[0.2em]" style="color: var(--color-theme-public-primary)">
-                            Version 10.2.7 | Dragonflight
+                            Version 4.0.6 | Cataclysm
                         </p>
                         <h1 class="mb-6 text-5xl font-bold leading-none tracking-tight text-white sm:text-6xl lg:text-7xl">
-                            Forge Your Legend
+                            Forja tu Leyenda
                         </h1>
                         <p class="max-w-2xl text-base leading-relaxed sm:text-lg" style="color: var(--color-theme-public-text-secondary)">
-                            Download the latest Aetheris game client and custom tools to join our high-performance community.
-                            Experience the most stable and feature-rich private server environment available.
+                            Descarga el último cliente de juego de Moonshard y nuestras herramientas personalizadas para unirte a nuestra comunidad de alto rendimiento.
+                            Experimenta el entorno de servidor privado más estable y completo disponible.
                         </p>
                     </div>
                 </div>
@@ -117,19 +121,17 @@ const requirements = [
 
                             <div class="space-y-4">
                                 <div class="flex items-center justify-between gap-3 font-mono-data text-[10px] uppercase tracking-wide" style="color: var(--color-theme-public-outline)">
-                                    <span>Version: {{ download.version }}</span>
-                                    <span>Size: {{ download.size }}</span>
+                                    <span>Versión: {{ download.version }}</span>
+                                    <span>Tamaño: {{ download.size }}</span>
                                 </div>
-                                <button
-                                    type="button"
-                                    disabled
-                                    :aria-label="`${download.title} download is not available yet`"
-                                    class="download-button flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg py-4 font-bold text-white opacity-60"
+                                <a
+                                    :href="safeRoute(download.link)"
+                                    class="download-button flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg py-4 font-bold text-white transition-colors hover:brightness-110 active:scale-95"
                                     style="background-color: var(--color-theme-public-primary-container)"
                                 >
-                                    <span>Download Now</span>
+                                    <span>Descargar Ahora</span>
                                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">download</span>
-                                </button>
+                                </a>
                             </div>
                         </article>
                     </div>
@@ -137,9 +139,9 @@ const requirements = [
 
                 <section class="mt-28 sm:mt-32" aria-labelledby="getting-started-heading">
                     <div class="mb-16 text-center">
-                        <h2 id="getting-started-heading" class="mb-4 text-3xl font-bold text-white sm:text-4xl">Getting Started</h2>
+                        <h2 id="getting-started-heading" class="mb-4 text-3xl font-bold text-white sm:text-4xl">Primeros pasos</h2>
                         <p class="mx-auto max-w-2xl leading-relaxed" style="color: var(--color-theme-public-text-secondary)">
-                            Follow these steps to set up your account and begin your journey through the realm of Aetheris.
+                            Sigue estos pasos para configurar tu cuenta y comenzar tu viaje a través del reino de Elune.
                         </p>
                     </div>
 
@@ -181,7 +183,7 @@ const requirements = [
                                 <div class="mb-7 flex items-start gap-4">
                                     <span class="material-symbols-outlined" style="color: var(--color-theme-public-primary)" aria-hidden="true">info</span>
                                     <p class="text-sm leading-relaxed text-white">
-                                        For the best experience, ensure your GPU drivers are updated to the latest version before launching the client for the first time.
+                                        Para una mejor experiencia, asegúrate de tener los controladores de tu tarjeta gráfica actualizados a la última versión antes de iniciar el cliente por primera vez.
                                     </p>
                                 </div>
 
