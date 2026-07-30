@@ -36,8 +36,7 @@ function safeRoute(name) {
 const navLinks = computed(() => [
     { label: 'Inicio', routeName: 'public.home', visible: true },
     { label: 'Noticias', routeName: 'public.news', visible: !!page.props.enabledModules?.news },
-    { label: 'Descargas', routeName: 'public.downloads', visible: true },
-    { label: 'Discord', routeName: 'public.discord', visible: true },
+    { label: 'Descargas', routeName: 'public.downloads', visible: true }
 ].filter((link) => link.visible));
 
 function isActive(routeName) {
@@ -95,14 +94,14 @@ function isActive(routeName) {
                     onmouseenter="this.style.color='white'"
                     onmouseleave="this.style.color='var(--color-theme-public-text-secondary)'"
                 >
-                    Login
+                    Iniciar sesión
                 </Link>
                 <Link
                     :href="safeRoute('register')"
                     class="text-sm font-bold px-6 py-2 rounded-lg hover:brightness-110 active:scale-95 transition-all"
                     style="background-color: var(--color-theme-public-primary-container); color: var(--color-theme-public-on-primary-container)"
                 >
-                    Register
+                    Crear cuenta
                 </Link>
             </div>
 
