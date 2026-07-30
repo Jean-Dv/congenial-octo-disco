@@ -26,3 +26,8 @@ Route::permanentRedirect(
     '/addons',
     'https://drive.google.com/file/d/1E0rWtQ2YQfTnO4P0y4GuXEHMxKqeqb2b/view?usp=drive_link'
 )->name('public.downloads.addons');
+
+Route::permanentRedirect(
+    '/discord',
+    'https://discord.gg/qEMz5XUAAY'
+)->name('public.discord');
