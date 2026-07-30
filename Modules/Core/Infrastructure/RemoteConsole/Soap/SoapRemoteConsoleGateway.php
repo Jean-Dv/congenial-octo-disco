@@ -61,6 +61,10 @@ final class SoapRemoteConsoleGateway implements RemoteConsoleGatewayInterface
     private function buildClient(RemoteConsoleConnection $connection): SoapClient
     {
         $namespaceUri = $connection->options['namespace_uri'] ?? self::DEFAULT_NAMESPACE_URI;
+        $connectionTimeout = max(
+            1,
+            (int) ($connection->options['connection_timeout'] ?? self::CONNECTION_TIMEOUT_SECONDS),
+        );
 
         return new SoapClient(null, [
             'location' => sprintf('http://%s:%d/', $connection->host, $connection->port),
@@ -70,7 +74,7 @@ final class SoapRemoteConsoleGateway implements RemoteConsoleGatewayInterface
             'style' => SOAP_RPC,
             'trace' => 1,
             'exceptions' => true,
-            'connection_timeout' => self::CONNECTION_TIMEOUT_SECONDS,
+            'connection_timeout' => $connectionTimeout,
         ]);
     }
 }

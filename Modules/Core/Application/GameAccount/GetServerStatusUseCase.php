@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\GameAccount;
 
+use Modules\Core\Domain\Realm\Ports\RealmRepositoryInterface;
 use Moon\RemoteConsole\Commands\ServerInfoCommand;
+use Moon\RemoteConsole\Contracts\RemoteCommandResult;
 use Moon\RemoteConsole\Contracts\RemoteConsoleConnection;
 use Moon\RemoteConsole\Contracts\RemoteConsoleGatewayInterface;
-use Moon\RemoteConsole\Contracts\RemoteCommandResult;
-use Modules\Core\Domain\Realm\Ports\RealmRepositoryInterface;
 use RuntimeException;
 
 /**
@@ -20,8 +20,7 @@ final class GetServerStatusUseCase
     public function __construct(
         private readonly RealmRepositoryInterface $realms,
         private readonly RemoteConsoleGatewayInterface $gateway,
-    ) {
-    }
+    ) {}
 
     public function handle(int $realmId): RemoteCommandResult
     {
@@ -38,9 +37,12 @@ final class GetServerStatusUseCase
             port: $console->port,
             username: $console->username,
             password: $console->password,
-            options: ['namespace_uri' => $realm->coreType()->soapNamespaceUri()],
+            options: [
+                'namespace_uri' => $realm->coreType()->soapNamespaceUri(),
+                'connection_timeout' => (int) config('remote-console.status_connection_timeout', 3),
+            ],
         );
 
-        return $this->gateway->execute(new ServerInfoCommand(), $connection);
+        return $this->gateway->execute(new ServerInfoCommand, $connection);
     }
 }

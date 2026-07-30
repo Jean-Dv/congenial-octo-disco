@@ -24,11 +24,13 @@ const props = defineProps({
     realmStatus: {
         type: Object,
         default: () => ({
+            name:           'Sin reino configurado',
+            configured:     false,
             online:         false,
-            latencyMs:      0,
+            latencyMs:      null,
             latencyStable:  false,
-            alliancePct:    50,
-            hordePct:       50,
+            alliancePct:    0,
+            hordePct:       0,
             latencyHistory: [],
         }),
     },
@@ -47,7 +49,7 @@ const heroStats = [
     { icon: 'group',      label: 'Online',   value: props.serverStats.online },
     { icon: 'trending_up',label: 'Peak',     value: props.serverStats.peak },
     { icon: 'update',     label: 'Uptime',   value: props.serverStats.uptime },
-    { icon: 'layers',     label: 'Version',  value: props.serverStats.version },
+    { icon: 'layers',     label: 'Version',  value: "4.0.6" },
     { icon: 'dns',        label: 'Realm',    value: props.serverStats.realm },
     { icon: 'bolt',       label: 'Latencia', value: props.serverStats.latency },
 ];
@@ -279,9 +281,9 @@ function categoryStyle(type) {
                     <!-- Online indicator -->
                     <div class="flex items-center justify-between">
                         <div>
-                            <div class="text-sm" style="color: var(--color-theme-public-text-disabled)">Aetheris Global</div>
+                            <div class="text-sm" style="color: var(--color-theme-public-text-disabled)">{{ realmStatus.name }}</div>
                             <div class="text-xl font-semibold text-white">
-                                {{ realmStatus.online ? 'ONLINE' : 'OFFLINE' }}
+                                {{ !realmStatus.configured ? 'NO CONFIGURADO' : (realmStatus.online ? 'ONLINE' : 'OFFLINE') }}
                             </div>
                         </div>
                         <div
@@ -302,9 +304,12 @@ function categoryStyle(type) {
                     <!-- Latency graph -->
                     <div class="space-y-2">
                         <div class="flex justify-between text-xs" style="color: var(--color-theme-public-text-disabled)">
-                            <span>Latencia Media</span>
+                            <span>Latencia Realmlist</span>
                             <span :style="`color: ${realmStatus.latencyStable ? 'var(--color-theme-public-status-success)' : 'var(--color-theme-public-status-warning)'}`">
-                                {{ realmStatus.latencyStable ? 'Estable' : 'Inestable' }} ({{ realmStatus.latencyMs }}ms)
+                                <template v-if="realmStatus.latencyMs !== null">
+                                    {{ realmStatus.latencyStable ? 'Estable' : 'Inestable' }} ({{ realmStatus.latencyMs }}ms)
+                                </template>
+                                <template v-else>No disponible</template>
                             </span>
                         </div>
                         <div class="h-16 w-full flex items-end gap-1">
