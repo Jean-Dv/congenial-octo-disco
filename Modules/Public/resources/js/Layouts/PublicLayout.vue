@@ -152,14 +152,14 @@ function isActive(routeName) {
                         class="flex-1 text-center py-2 rounded-lg text-sm font-medium transition-colors"
                         style="border: 1px solid var(--color-theme-public-outline-variant); color: var(--color-theme-public-text-secondary)"
                     >
-                        Login
+                        Iniciar sesión
                     </Link>
                     <Link
                         :href="route('register')"
                         class="flex-1 text-center py-2 rounded-lg text-sm font-bold hover:brightness-110 transition-all"
                         style="background-color: var(--color-theme-public-primary-container); color: var(--color-theme-public-on-primary-container)"
                     >
-                        Register
+                        Crear cuenta
                     </Link>
                 </div>
             </div>
@@ -174,9 +174,9 @@ function isActive(routeName) {
         <div class="flex flex-col md:flex-row justify-between items-start px-8 max-w-360 mx-auto gap-6">
             <!-- Brand -->
             <div class="space-y-4">
-                <div class="font-display text-xl font-bold" style="color: var(--color-theme-public-text-primary)">AETHERIS</div>
+                <div class="font-display text-xl font-bold" style="color: var(--color-theme-public-text-primary)">MOONSHARD</div>
                 <p class="text-xs max-w-xs" style="color: var(--color-theme-public-text-disabled)">
-                    © 2024 Aetheris WoW. All rights reserved.<br>
+                    © 2026 Moonshard. All rights reserved.<br>
                     Not affiliated with Blizzard Entertainment.
                 </p>
             </div>
