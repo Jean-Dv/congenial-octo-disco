@@ -70,7 +70,7 @@ final class TrinityLikeGameAccountGateway implements GameAccountGatewayInterface
             'email' => $email,
             'reg_mail' => $email,
             'joindate' => Date::now(),
-            'expansion' => 2,
+            'expansion' => 3,
         ], $credentials->columns()));
     }
 
